@@ -1,0 +1,1158 @@
+<title>Boceto MiBingo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Figtree:wght@400;600;800&display=swap">
+<style>
+/* Layout: salón de bingo de barrio. Teléfono jugable a la izquierda, propuesta escrita a la derecha; en móvil se apilan. Un solo look oscuro (madera + tapete) a propósito. */
+:root{
+  color-scheme: dark;
+  --room:#17120e; --room-2:#231a13; --room-3:#2f241b;
+  --text:#f4ecdf; --muted:#b9ad9b; --line:rgba(244,236,223,.14);
+  --felt:#0f4a3b; --felt-hi:#1b6b55; --wood:#6b4426;
+  --paper:#fbf5e6; --ink:#231c17;
+  --red:#e0442e; --red-dk:#b8321f; --gold:#f3b73b; --ok:#46b47d;
+  --display:"Lilita One","Arial Rounded MT Bold","Trebuchet MS",sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--room);color:var(--text);font-family:var(--body);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 48px}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);font-weight:400;letter-spacing:.01em;text-wrap:balance;margin:0}
+.stage{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:auto minmax(0,1fr);gap:48px;align-items:start}
+@media (max-width:980px){.stage{grid-template-columns:minmax(0,1fr);gap:36px}}
+
+/* ---------- quick nav ---------- */
+.proto{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);display:flex;flex-direction:column;gap:12px;align-items:center}
+@media (max-width:980px){.proto{position:static}}
+.jump{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:400px}
+.jump span{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;align-self:center;margin-right:2px}
+.jump button{background:var(--room-2);border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:12.5px;color:var(--muted)}
+.jump button.on{background:var(--gold);color:var(--ink);border-color:var(--gold);font-weight:800}
+
+/* ---------- phone ---------- */
+.phone{width:390px;height:800px;border-radius:44px;background:#0b0907;padding:10px;box-shadow:0 0 0 1px #3a2e24,0 30px 80px rgba(0,0,0,.55);position:relative}
+.screenbox{position:relative;width:100%;height:100%;border-radius:34px;overflow:hidden;background:var(--room-2);display:flex;flex-direction:column}
+.notch{height:30px;flex:none;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:12px;font-weight:800;color:var(--text);background:transparent;position:relative;z-index:5}
+.notch::after{content:"";position:absolute;left:50%;top:6px;width:96px;height:22px;border-radius:12px;background:#0b0907;transform:translateX(-50%)}
+.screens{position:relative;flex:1;min-height:0}
+@media (max-width:440px){
+  .phone{width:100%;height:760px;padding:6px;border-radius:30px}
+  .screenbox{border-radius:25px}
+}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden}
+.pad{padding:12px 20px 20px;display:flex;flex-direction:column;gap:14px}
+
+/* ---------- generic controls ---------- */
+.btn{border:0;border-radius:14px;padding:13px 16px;font-weight:800;font-size:15.5px;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .08s}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--red);color:#fff;box-shadow:0 4px 0 var(--red-dk)}
+.btn.gold{background:var(--gold);color:var(--ink);box-shadow:0 4px 0 #b7841d}
+.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--text)}
+.btn.light{background:var(--paper);color:var(--ink)}
+.btn[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none}
+label.f{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;color:var(--muted)}
+label.f input{background:var(--room);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--text);font:inherit;font-size:16px}
+label.f input:focus{border-color:var(--gold);outline:none}
+.small{font-size:13px;color:var(--muted);margin:0}
+.small a{color:var(--gold)}
+.topbar{display:flex;align-items:center;gap:10px;padding:6px 14px 4px}
+.topbar h2{font-size:22px;flex:1}
+.back{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--room);display:grid;place-items:center;font-size:20px;line-height:1}
+
+/* ---------- balls ---------- */
+.ball{--bc:var(--red);width:var(--s,64px);height:var(--s,64px);border-radius:50%;flex:none;display:grid;place-items:center;
+  background:radial-gradient(circle at 32% 26%,rgba(255,255,255,.55) 0 7%,transparent 8%),radial-gradient(circle at 50% 60%,var(--bc) 55%,color-mix(in srgb,var(--bc) 60%,#000) 100%);
+  box-shadow:0 3px 8px rgba(0,0,0,.4)}
+.ball b{width:62%;aspect-ratio:1;border-radius:50%;background:#fffdf7;color:var(--ink);display:grid;place-items:center;font-family:var(--body);font-weight:800;font-size:calc(var(--s,64px)*.3);font-variant-numeric:tabular-nums;line-height:1}
+
+/* ---------- login ---------- */
+.s-login{background:radial-gradient(120% 70% at 50% 0%,var(--felt-hi),var(--felt) 45%,var(--room-2) 85%)}
+.logo{display:flex;flex-direction:column;align-items:center;gap:10px;padding:42px 0 6px}
+.logo .balls{display:flex;gap:6px}
+.logo .balls .ball{--s:46px}
+.logo .balls .ball:nth-child(2){transform:translateY(-8px)}
+.logo .balls .ball:nth-child(4){transform:translateY(-5px)}
+.logo h1{font-size:52px;line-height:1;text-shadow:0 4px 0 rgba(0,0,0,.3)}
+.logo p{margin:0;color:var(--muted);text-align:center}
+.google{background:#fff;color:#1f1f1f;box-shadow:0 4px 0 #c9c2b6}
+.gmark{width:22px;height:22px;border-radius:50%;border:3px solid #4285f4;border-right-color:#34a853;border-bottom-color:#fbbc05;border-left-color:#ea4335}
+.or{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+#emailForm{display:flex;flex-direction:column;gap:12px}
+
+/* ---------- profile ---------- */
+.avatar{--c:var(--red);width:84px;height:84px;border-radius:50%;background:var(--c);display:grid;place-items:center;font-family:var(--display);font-size:34px;color:#fff;margin:0 auto;box-shadow:0 0 0 4px var(--room-2),0 0 0 6px var(--c)}
+.swatches{display:flex;gap:10px;justify-content:center}
+.swatches button{width:30px;height:30px;border-radius:50%;border:2px solid transparent;background:var(--c)}
+.swatches button.on{border-color:var(--text);box-shadow:0 0 0 2px var(--room-2) inset}
+.hint-box{background:var(--room);border:1px dashed var(--line);border-radius:12px;padding:10px 12px;font-size:13px;color:var(--muted)}
+.err{color:#ff8d7a;font-size:13.5px;margin:0;font-weight:600}
+
+/* ---------- home ---------- */
+.home-top{display:flex;align-items:center;gap:12px;padding:8px 20px 0}
+.home-top .avatar{width:44px;height:44px;font-size:18px;margin:0;box-shadow:none}
+.home-top div{flex:1;line-height:1.25}
+.home-top small{color:var(--muted)}
+.chips{display:flex;align-items:center;gap:6px;background:var(--room);border:1px solid var(--line);border-radius:999px;padding:5px 12px 5px 6px;font-weight:800;font-variant-numeric:tabular-nums}
+.chip-coin{width:20px;height:20px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe29a,var(--gold) 55%,#b7841d);box-shadow:inset 0 0 0 2px #d79a22}
+.quick{border-radius:22px;padding:18px;background:radial-gradient(130% 120% at 80% 0%,var(--felt-hi),var(--felt));box-shadow:inset 0 0 0 5px var(--wood),0 10px 24px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden}
+.quick h3{font-size:28px}
+.quick p{margin:0;color:#d5e8de;font-size:14px}
+.quick .deco{position:absolute;right:-12px;top:-10px;display:flex;gap:4px;transform:rotate(12deg);opacity:.9}
+.quick .deco .ball{--s:40px}
+.tile{background:var(--room);border:1px solid var(--line);border-radius:16px;padding:14px 16px;text-align:left;display:flex;flex-direction:column;gap:2px}
+.tile b{font-size:16px}
+.tile small{color:var(--muted);font-size:13px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tiles .tile{align-items:center;text-align:center;padding:12px 6px;font-size:13px;font-weight:600}
+.tiles .ico{font-family:var(--display);font-size:22px;color:var(--gold);line-height:1}
+.resume{background:var(--gold);color:var(--ink);border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:10px;font-weight:600;font-size:14px}
+.resume button{margin-left:auto;background:var(--ink);color:var(--gold);border:0;border-radius:10px;padding:8px 12px;font-weight:800}
+.daily{border:1.5px dashed color-mix(in srgb,var(--gold) 55%,transparent);border-radius:16px;padding:12px 14px;font-size:14px;display:flex;gap:10px;align-items:center}
+.daily .tag{font-family:var(--display);color:var(--gold);font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+
+/* ---------- custom ---------- */
+.field{display:flex;align-items:center;gap:12px;justify-content:space-between;background:var(--room);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.field.col{flex-direction:column;align-items:stretch}
+.field div{display:flex;flex-direction:column;line-height:1.3}
+.field small{color:var(--muted);font-size:12.5px}
+.stepper{display:flex;align-items:center;gap:6px;flex-direction:row!important}
+.stepper button{width:38px;height:38px;border-radius:12px;border:0;background:var(--room-3);font-size:20px;font-weight:800}
+.stepper output{min-width:30px;text-align:center;font-family:var(--display);font-size:26px;font-variant-numeric:tabular-nums}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--room-3);border-radius:12px;padding:4px;flex-direction:row!important}
+.seg button{border:0;background:transparent;border-radius:9px;padding:8px 4px;font-weight:600;font-size:13.5px;color:var(--muted)}
+.seg button.on{background:var(--paper);color:var(--ink);font-weight:800}
+.summary{text-align:center;color:var(--muted);font-size:13.5px;margin:0}
+.summary b{color:var(--text)}
+
+/* ---------- cards ---------- */
+.card{--tint:#fde2c8;background:var(--tint);border-radius:12px;padding:7px 7px 8px;color:var(--ink);box-shadow:0 2px 0 rgba(0,0,0,.25);position:relative}
+.card-head{display:flex;justify-content:space-between;align-items:baseline;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:0 3px 5px;color:color-mix(in srgb,var(--ink) 70%,transparent)}
+.card-head b{font-family:var(--display);font-weight:400;font-size:13px;letter-spacing:.02em;color:var(--red-dk);text-transform:none}
+.grid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:2px}
+.cell{aspect-ratio:1/1.08;background:rgba(255,255,255,.82);border-radius:5px;display:grid;place-items:center;font-weight:800;font-size:15px;font-variant-numeric:tabular-nums;position:relative;border:0;padding:0;color:var(--ink);line-height:1;-webkit-tap-highlight-color:transparent}
+.cell.empty{background:repeating-linear-gradient(45deg,rgba(0,0,0,.05) 0 3px,transparent 3px 6px)}
+.big .cell{font-size:18px}
+.cell.marked::after{content:"";position:absolute;inset:2px;border-radius:50%;background:color-mix(in srgb,var(--red) 72%,transparent);mix-blend-mode:multiply;animation:daub .22s ease-out}
+.cell.marked{color:var(--ink)}
+@keyframes daub{from{transform:scale(.3);opacity:.3}}
+.cell.shake{animation:shake .35s;background:#ffd6cf}
+@keyframes shake{25%{transform:translateX(-3px)}50%{transform:translateX(3px)}75%{transform:translateX(-2px)}}
+.cell.hint{box-shadow:0 0 0 3px var(--gold);animation:pulse 1s infinite}
+.cell.just{box-shadow:0 0 0 3px var(--ok)}
+@keyframes pulse{50%{box-shadow:0 0 0 3px transparent}}
+.card.lined{box-shadow:0 0 0 3px var(--gold),0 2px 0 rgba(0,0,0,.25)}
+
+/* ---------- pick ---------- */
+.pick-head{padding:4px 16px 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.pick-head p{margin:0;font-size:13.5px;color:var(--muted)}
+.count{font-family:var(--display);font-size:20px;background:var(--room);border:1px solid var(--line);border-radius:12px;padding:2px 12px;font-variant-numeric:tabular-nums}
+.pick-list{flex:1;overflow-y:auto;padding:4px 14px 12px;display:flex;flex-direction:column;gap:10px}
+.pick{border-radius:14px;padding:3px;border:2px solid transparent;position:relative;cursor:pointer;transition:transform .1s}
+.pick.on{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 18%,transparent)}
+.pick .tick{position:absolute;right:-4px;top:-6px;width:28px;height:28px;border-radius:50%;background:var(--gold);color:var(--ink);font-weight:800;display:none;place-items:center;z-index:2;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.pick.on .tick{display:grid}
+.foot{display:grid;grid-template-columns:auto auto 1fr;gap:8px;padding:10px 14px 14px;border-top:1px solid var(--line);background:var(--room-2)}
+
+/* ---------- game ---------- */
+.s-game{background:radial-gradient(140% 60% at 50% 18%,#3a2a1d,var(--room-2) 70%);overflow:hidden}
+.g-top{display:flex;align-items:center;gap:8px;padding:4px 12px 2px;flex:none}
+.pausebtn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--room);display:grid;place-items:center}
+.pausebtn i{display:flex;gap:4px}
+.pausebtn i::before,.pausebtn i::after{content:"";width:4px;height:14px;border-radius:2px;background:var(--text)}
+.counter{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);line-height:1.2}
+.counter b{display:block;color:var(--text);font-size:16px}
+.phase{margin-left:auto;font-family:var(--display);font-size:14px;letter-spacing:.04em;padding:5px 10px;border-radius:999px;background:var(--gold);color:var(--ink)}
+.phase.bingo{background:var(--red);color:#fff}
+.table-wrap{position:relative;height:236px;margin:0 6px;flex:none}
+.felt{position:absolute;inset:30px 14px 22px;border-radius:50%;background:radial-gradient(70% 70% at 50% 45%,var(--felt-hi),var(--felt) 70%);box-shadow:inset 0 0 0 7px var(--wood),inset 0 0 0 9px #8a5a33,inset 0 0 40px rgba(0,0,0,.45),0 12px 24px rgba(0,0,0,.45)}
+.dealer{position:absolute;left:50%;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;z-index:2}
+.dealer .av{width:40px;height:40px;border-radius:50%;background:#2c2c34;display:grid;place-items:center;font-family:var(--display);color:var(--gold);font-size:13px;position:relative;box-shadow:0 0 0 2px var(--gold)}
+.dealer .av::after{content:"";position:absolute;bottom:-6px;width:20px;height:9px;background:conic-gradient(from 90deg at 50% 50%,var(--red) 0 25%,transparent 0 50%,var(--red) 0 75%,transparent 0);border-radius:2px}
+.dealer span{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:6px;background:var(--room);padding:0 6px;border-radius:6px}
+.center{position:absolute;left:50%;top:57%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:4px;width:150px;text-align:center;z-index:1}
+.bombo{width:86px;height:86px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,rgba(255,255,255,.08) 0 60%,transparent 61%);
+  box-shadow:0 0 0 2px rgba(243,183,59,.45),inset 0 0 0 2px rgba(243,183,59,.25)}
+.bombo .ball{--s:66px}
+.bombo .ball.drop{animation:drop .5s cubic-bezier(.2,1.4,.4,1)}
+@keyframes drop{from{transform:translateY(-34px) scale(.5) rotate(-90deg);opacity:0}}
+.calltext{font-size:12.5px;font-weight:800;color:#e9f4ee;min-height:1.3em;line-height:1.25;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.seat{position:absolute;transform:translate(-50%,-50%);width:78px;display:flex;flex-direction:column;align-items:center;gap:1px;z-index:2;text-align:center}
+.seat .av{--c:#888;width:36px;height:36px;border-radius:50%;background:var(--c);display:grid;place-items:center;font-family:var(--display);font-size:14px;color:#fff;box-shadow:0 0 0 2px var(--room-2)}
+.seat .nm{font-size:11px;font-weight:800;line-height:1.1;text-shadow:0 1px 2px #000;white-space:nowrap}
+.seat .pill{font-size:10px;font-weight:800;padding:1px 6px;border-radius:999px;background:rgba(0,0,0,.55);color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.seat .pill.hot{background:var(--red);color:#fff;animation:pulse2 .9s infinite}
+@keyframes pulse2{50%{transform:scale(1.1)}}
+.seat .bub{position:absolute;top:-16px;background:var(--paper);color:var(--ink);font-size:10px;font-weight:800;padding:1px 6px;border-radius:8px;white-space:nowrap;animation:pop .25s}
+@keyframes pop{from{transform:scale(.4);opacity:0}}
+.seat.me .av{box-shadow:0 0 0 2px var(--gold)}
+.banner{position:absolute;inset:40px 30px 30px;display:grid;place-items:center;z-index:4;pointer-events:none}
+.banner div{background:var(--paper);color:var(--ink);border-radius:18px;padding:10px 18px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.5);animation:pop .3s}
+.banner h3{font-size:34px;color:var(--red);line-height:1}
+.banner p{margin:2px 0 0;font-size:13px;font-weight:600}
+.last{display:flex;align-items:center;gap:6px;padding:2px 12px 6px;flex:none}
+.last .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-right:2px}
+.last .ball{--s:28px}
+.last .ball:first-of-type{--s:32px}
+.boardbtn{margin-left:auto;font-size:12.5px;font-weight:800;border:1px solid var(--line);background:var(--room);border-radius:10px;padding:6px 10px}
+.my-cards{flex:1;min-height:0;overflow-y:auto;padding:4px 12px 10px;display:flex;flex-direction:column;gap:10px}
+.my-cards.blur{filter:blur(8px)}
+.g-actions{flex:none;display:grid;grid-template-columns:1fr 1fr auto;gap:8px;padding:10px 12px 12px;background:var(--room);border-top:1px solid var(--line)}
+.claim{font-family:var(--display);font-size:24px;letter-spacing:.03em;border:0;border-radius:14px;padding:10px 6px}
+.claim.l{background:var(--gold);color:var(--ink);box-shadow:0 4px 0 #b7841d}
+.claim.b{background:var(--red);color:#fff;box-shadow:0 4px 0 var(--red-dk)}
+.claim[disabled]{opacity:.35;box-shadow:none}
+.helpbtn{border:1px solid var(--line);background:var(--room-2);border-radius:14px;padding:0 12px;font-size:12px;font-weight:800;line-height:1.15}
+.helpbtn b{display:block;font-family:var(--display);font-weight:400;font-size:18px;color:var(--gold)}
+
+/* overlays */
+.overlay{position:absolute;inset:0;z-index:10;background:rgba(15,11,8,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;flex-direction:column;justify-content:center;padding:24px;gap:12px}
+.overlay h2{font-size:38px;text-align:center}
+.overlay p{text-align:center;color:var(--muted);margin:0}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:11;background:var(--room-2);border-radius:22px 22px 0 0;padding:14px 14px 18px;box-shadow:0 -10px 30px rgba(0,0,0,.5);animation:up .25s}
+@keyframes up{from{transform:translateY(40%);opacity:0}}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sheet-head h3{font-size:20px}
+.board{display:grid;grid-template-columns:repeat(10,1fr);gap:3px}
+.board span{aspect-ratio:1;display:grid;place-items:center;border-radius:50%;font-size:11.5px;font-weight:800;color:var(--muted);background:var(--room);font-variant-numeric:tabular-nums}
+.board span.on{background:var(--paper);color:var(--ink)}
+.board span.lastn{background:var(--red);color:#fff}
+.result{justify-content:flex-start;padding-top:40px;overflow-y:auto}
+.result .ball{--s:70px;margin:0 auto}
+.rlist{background:var(--room);border:1px solid var(--line);border-radius:16px;padding:6px 14px}
+.rlist div{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.rlist div:last-child{border:0}
+.rlist b{font-variant-numeric:tabular-nums;text-align:right}
+.toast{position:absolute;left:50%;bottom:92px;transform:translateX(-50%);z-index:20;background:var(--paper);color:var(--ink);font-weight:800;font-size:13.5px;padding:9px 14px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.45);width:max-content;max-width:86%;text-align:center;animation:pop .2s}
+
+/* settings & howto */
+.list{background:var(--room);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.row:last-child{border:0}
+.row div{flex:1;line-height:1.3}
+.row small{display:block;color:var(--muted);font-size:12.5px}
+.sw{appearance:none;-webkit-appearance:none;width:46px;height:28px;border-radius:999px;background:var(--room-3);position:relative;flex:none;cursor:pointer;transition:background .15s}
+.sw::after{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:var(--muted);transition:transform .15s,background .15s}
+.sw:checked{background:var(--ok)}
+.sw:checked::after{transform:translateX(18px);background:#fff}
+.sec-t{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin:6px 4px -6px}
+.howto ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat{background:var(--room);border:1px solid var(--line);border-radius:14px;padding:12px}
+.stat b{display:block;font-family:var(--display);font-weight:400;font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{font-size:12.5px;color:var(--muted)}
+
+/* ---------- docs ---------- */
+.docs{min-width:0;display:flex;flex-direction:column;gap:34px;max-width:660px}
+.docs header h1{font-size:clamp(34px,5vw,50px);line-height:1.02}
+.docs header h1 em{font-style:normal;color:var(--gold)}
+.lede{font-size:17px;color:var(--muted);margin:10px 0 0;max-width:60ch}
+.docs h2{font-size:24px;margin-bottom:10px}
+.docs p{margin:0 0 10px;max-width:64ch}
+.docs ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.docs li{max-width:62ch}
+.docs li b{color:var(--text)}
+.muted{color:var(--muted)}
+.rules{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+.colnums{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:2px;padding:0 7px;font-size:9.5px;color:var(--muted);text-align:center;font-variant-numeric:tabular-nums;margin-bottom:4px}
+.samplewrap{max-width:420px}
+.feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px}
+.feat > div{border-top:3px solid var(--c);padding-top:10px}
+.feat h3{font-size:17px;margin-bottom:6px;color:var(--c)}
+.feat ul{padding-left:18px;font-size:14px;gap:5px}
+.qs{display:flex;flex-direction:column;gap:10px;counter-reset:q}
+.q{background:var(--room-2);border:1px solid var(--line);border-radius:14px;padding:12px 14px 12px 50px;position:relative;counter-increment:q}
+.q::before{content:counter(q);position:absolute;left:14px;top:11px;width:24px;height:24px;border-radius:50%;background:var(--gold);color:var(--ink);font-weight:800;display:grid;place-items:center;font-size:13px}
+.q b{display:block}
+.q span{color:var(--muted);font-size:14px}
+.stack{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 14px;font-size:14.5px}
+.stack dt{font-weight:800;color:var(--gold)}
+.stack dd{margin:0;color:var(--muted)}
+.steps{display:flex;flex-direction:column;gap:8px;padding-left:0!important;list-style:none;counter-reset:s}
+.steps li{counter-increment:s;padding-left:34px;position:relative}
+.steps li::before{content:counter(s);position:absolute;left:0;top:0;font-family:var(--display);color:var(--red);font-size:20px;line-height:1.2}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="stage">
+  <div class="proto">
+    <nav class="jump" id="jump" aria-label="Ir a pantalla">
+      <span>Ir a</span>
+      <button data-jump="login">Acceso</button>
+      <button data-jump="profile">Perfil</button>
+      <button data-jump="home">Menú</button>
+      <button data-jump="custom">Personalizada</button>
+      <button data-jump="pick">Cartones</button>
+      <button data-jump="game">Mesa</button>
+    </nav>
+
+    <div class="phone" id="phone">
+      <div class="screenbox">
+        <div class="notch"><span>21:30</span><span>5G</span></div>
+        <div class="screens" id="screens">
+
+          <!-- LOGIN -->
+          <section class="screen s-login" data-screen="login">
+            <div class="pad">
+              <div class="logo">
+                <div class="balls">
+                  <div class="ball" style="--bc:#e0442e"><b>M</b></div>
+                  <div class="ball" style="--bc:#f3b73b"><b>i</b></div>
+                  <div class="ball" style="--bc:#1aa3c2"><b>B</b></div>
+                  <div class="ball" style="--bc:#7cb342"><b>!</b></div>
+                </div>
+                <h1>MiBingo</h1>
+                <p>El bingo de toda la vida, en el bolsillo.<br>Atento a las bolas: aquí nadie marca por ti.</p>
+              </div>
+              <button class="btn google" id="googleBtn" type="button"><span class="gmark" aria-hidden="true"></span>Continuar con Google</button>
+              <div class="or">o con tu correo</div>
+              <form id="emailForm" novalidate>
+                <label class="f">Correo electrónico<input id="email" type="email" autocomplete="email" placeholder="tu@correo.com"></label>
+                <label class="f">Contraseña<input id="pass" type="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres"></label>
+                <button class="btn primary" id="emailBtn">Crear cuenta</button>
+                <p class="small" style="text-align:center"><span id="loginSwapTxt">¿Ya tienes cuenta?</span> <a href="#" id="loginSwap">Entrar</a></p>
+              </form>
+            </div>
+          </section>
+
+          <!-- PROFILE -->
+          <section class="screen" data-screen="profile" hidden>
+            <div class="pad" style="padding-top:22px">
+              <h2 style="font-size:30px;text-align:center">¡Bienvenido a la mesa!</h2>
+              <p class="small" style="text-align:center;margin-top:-6px">Solo la primera vez. Así te verán los demás jugadores.</p>
+              <div class="avatar" id="pAvatar">L</div>
+              <div class="swatches" id="swatches"></div>
+              <label class="f">Nombre en la mesa<input id="pName" maxlength="14" placeholder="Tu nombre" autocomplete="nickname"></label>
+              <label class="f">Fecha de nacimiento<input id="pBirth" type="date" max="2026-11-24"></label>
+              <p class="small" id="ageOut">Usamos la fecha para calcular tu edad; nadie más la ve.</p>
+              <p class="err" id="pErr" hidden></p>
+              <button class="btn primary" id="pSave" type="button">Confirmar y entrar</button>
+            </div>
+          </section>
+
+          <!-- HOME -->
+          <section class="screen" data-screen="home" hidden>
+            <div class="home-top">
+              <div class="avatar" id="hAvatar">L</div>
+              <div><small>Hola,</small><br><b id="hName" style="font-size:18px">Lucía</b></div>
+              <div class="chips" style="flex:none"><span class="chip-coin" aria-hidden="true"></span><span id="hCoins">500</span></div>
+            </div>
+            <div class="pad">
+              <div class="resume" id="resume" hidden><span id="resumeTxt">Partida en pausa</span><button id="resumeBtn" type="button">Continuar</button></div>
+              <article class="quick">
+                <div class="deco" aria-hidden="true">
+                  <div class="ball" style="--bc:#7b55d6"><b>22</b></div>
+                  <div class="ball" style="--bc:#e0442e"><b>90</b></div>
+                </div>
+                <h3>Partida rápida</h3>
+                <p>4 jugadores · 2 cartones cada uno<br>Se juega línea y bingo</p>
+                <button class="btn gold" id="goQuick" type="button" style="margin-top:6px">Jugar ahora</button>
+              </article>
+              <button class="tile" id="goCustom" type="button"><b>Partida personalizada</b><small>Hasta 6 jugadores y 5 cartones cada uno, velocidad y nivel de los rivales</small></button>
+              <div class="tiles">
+                <button class="tile" data-go="howto" type="button"><span class="ico">?</span>Cómo se juega</button>
+                <button class="tile" data-go="stats" type="button"><span class="ico">%</span>Mis números</button>
+                <button class="tile" id="goSettings" type="button"><span class="ico">⚙</span>Ajustes</button>
+              </div>
+              <div class="daily"><div><span class="tag">Reto del día</span><br>Canta línea antes de la bola 25 y gana <b>+100 fichas</b>.</div></div>
+              <button class="btn ghost" id="logout" type="button" style="font-size:13px;padding:9px">Cerrar sesión</button>
+            </div>
+          </section>
+
+          <!-- CUSTOM -->
+          <section class="screen" data-screen="custom" hidden>
+            <div class="topbar"><button class="back" data-go="home" aria-label="Volver" type="button">‹</button><h2>Personalizada</h2></div>
+            <div class="pad" style="padding-top:6px">
+              <div class="field"><div><b>Jugadores en la mesa</b><small>Tú y tus rivales, máximo 6</small></div>
+                <div class="stepper" data-key="players" data-min="2" data-max="6"><button type="button" data-d="-1" aria-label="Menos">−</button><output>4</output><button type="button" data-d="1" aria-label="Más">+</button></div></div>
+              <div class="field"><div><b>Cartones por jugador</b><small>Tú eliges hasta este número</small></div>
+                <div class="stepper" data-key="cards" data-min="1" data-max="5"><button type="button" data-d="-1" aria-label="Menos">−</button><output>2</output><button type="button" data-d="1" aria-label="Más">+</button></div></div>
+              <div class="field col"><b>Velocidad del crupier</b>
+                <div class="seg" data-key="speed"><button type="button" data-v="lento">Tranquilo</button><button type="button" data-v="normal">Normal</button><button type="button" data-v="rapido">Rápido</button></div></div>
+              <div class="field col"><b>Rivales</b>
+                <div class="seg" data-key="bots"><button type="button" data-v="despistados">Despistados</button><button type="button" data-v="normales">Normales</button><button type="button" data-v="expertos">Expertos</button></div></div>
+              <p class="summary" id="cSummary"></p>
+              <button class="btn primary" id="customGo" type="button">Elegir mis cartones</button>
+            </div>
+          </section>
+
+          <!-- PICK -->
+          <section class="screen" data-screen="pick" hidden style="overflow:hidden">
+            <div class="topbar"><button class="back" id="pickBack" aria-label="Volver" type="button">‹</button><h2 id="pickTitle">Elige tus cartones</h2><span class="count" id="pickCount">0/2</span></div>
+            <div class="pick-head"><p>Toca los que te den buena espina. Puedes pedir otros 10.</p></div>
+            <div class="pick-list" id="pickList"></div>
+            <div class="foot">
+              <button class="btn ghost" id="pickNew" type="button" style="padding:12px">Otros 10</button>
+              <button class="btn ghost" id="pickRand" type="button" style="padding:12px">Al azar</button>
+              <button class="btn primary" id="pickGo" type="button" disabled>A la mesa</button>
+            </div>
+          </section>
+
+          <!-- GAME -->
+          <section class="screen s-game" data-screen="game" hidden>
+            <div class="g-top">
+              <button class="pausebtn" id="pauseBtn" aria-label="Pausar partida" type="button"><i></i></button>
+              <div class="counter"><b id="gCount">Bola 0</b>quedan <span id="gLeft">100</span></div>
+              <span class="phase" id="gPhase">Se juega LÍNEA</span>
+            </div>
+            <div class="table-wrap" id="tableWrap">
+              <div class="felt"></div>
+              <div class="dealer"><div class="av">CR</div><span id="dealerSt">Crupier</span></div>
+              <div class="center">
+                <div class="bombo" id="bombo"></div>
+                <div class="calltext" id="callText">¡Atentos, que empezamos!</div>
+              </div>
+              <div id="seats"></div>
+              <div class="banner" id="banner" hidden><div><h3 id="banTitle">¡LÍNEA!</h3><p id="banSub"></p></div></div>
+            </div>
+            <div class="last"><span class="lbl">Últimas</span><span id="lastBalls" style="display:flex;gap:5px;align-items:center"></span><button class="boardbtn" id="boardBtn" type="button">Ver tablero</button></div>
+            <div class="my-cards" id="myCards"></div>
+            <div class="g-actions">
+              <button class="claim l" id="claimL" type="button">¡LÍNEA!</button>
+              <button class="claim b" id="claimB" type="button">¡BINGO!</button>
+              <button class="helpbtn" id="hintBtn" type="button"><b id="hintLeft">3</b>pistas</button>
+            </div>
+
+            <div class="overlay" id="pauseOv" hidden>
+              <h2>En pausa</h2>
+              <p id="pauseInfo">El crupier espera. Tus cartones están tapados para que nadie mire.</p>
+              <button class="btn gold" id="resumeGame" type="button">Reanudar</button>
+              <button class="btn ghost" id="pauseSettings" type="button">Ajustes</button>
+              <button class="btn ghost" id="pauseExit" type="button">Salir al menú (se guarda)</button>
+              <button class="btn ghost" id="pauseQuit" type="button" style="border-color:transparent;color:var(--muted)">Abandonar partida</button>
+            </div>
+            <div class="overlay" id="quitOv" hidden>
+              <h2 style="font-size:30px">¿Abandonar?</h2>
+              <p>Perderás esta partida y los premios que llevas.</p>
+              <button class="btn primary" id="quitYes" type="button">Sí, abandonar</button>
+              <button class="btn ghost" id="quitNo" type="button">Seguir jugando</button>
+            </div>
+            <div class="sheet" id="boardSheet" hidden>
+              <div class="sheet-head"><h3>Tablero de bolas</h3><button class="back" id="boardClose" aria-label="Cerrar" type="button">×</button></div>
+              <div class="board" id="board"></div>
+              <p class="small" style="margin-top:10px">Consultar el tablero no pausa la partida.</p>
+            </div>
+            <div class="overlay result" id="resultOv" hidden></div>
+          </section>
+
+          <!-- SETTINGS -->
+          <section class="screen" data-screen="settings" hidden>
+            <div class="topbar"><button class="back" id="setBack" aria-label="Volver" type="button">‹</button><h2>Ajustes</h2></div>
+            <div class="pad" style="padding-top:6px">
+              <p class="sec-t">Crupier</p>
+              <div class="list">
+                <label class="row"><div>Voz del crupier<small>Canta cada número en voz alta</small></div><input type="checkbox" class="sw" id="set-voice"></label>
+                <label class="row"><div>Frases de bingo<small>“El 15, la niña bonita”</small></div><input type="checkbox" class="sw" id="set-phrases"></label>
+                <label class="row"><div>Sonidos<small>Bola, marcado y premios</small></div><input type="checkbox" class="sw" id="set-sound"></label>
+                <label class="row"><div>Vibración<small>Al marcar y al cantar</small></div><input type="checkbox" class="sw" id="set-vibe"></label>
+              </div>
+              <p class="sec-t">Ayudas</p>
+              <div class="list">
+                <label class="row"><div>Pistas<small>3 por partida: señalan números que se te han pasado</small></div><input type="checkbox" class="sw" id="set-hints"></label>
+                <label class="row"><div>Resaltar al salir<small>Modo fácil: ilumina el número si lo tienes</small></div><input type="checkbox" class="sw" id="set-highlight"></label>
+                <label class="row"><div>Números grandes<small>Cartones más legibles</small></div><input type="checkbox" class="sw" id="set-big"></label>
+                <label class="row"><div>Pausa automática<small>Si sales de la app o bloqueas el móvil</small></div><input type="checkbox" class="sw" id="set-autopause"></label>
+              </div>
+            </div>
+          </section>
+
+          <!-- HOWTO -->
+          <section class="screen" data-screen="howto" hidden>
+            <div class="topbar"><button class="back" data-go="home" aria-label="Volver" type="button">‹</button><h2>Cómo se juega</h2></div>
+            <div class="pad howto" style="padding-top:6px">
+              <ol>
+                <li>Elige tus cartones. Cada uno tiene <b>15 números</b> en 3 filas de 5.</li>
+                <li>El crupier saca bolas del <b>1 al 100</b>, sin repetir.</li>
+                <li><b>Toca el número</b> en tu cartón cuando salga. Nadie lo hace por ti.</li>
+                <li>¿Fila completa? Pulsa <b>¡LÍNEA!</b> antes que nadie. Solo hay una línea por partida.</li>
+                <li>¿Cartón completo? Pulsa <b>¡BINGO!</b> y se acaba la partida.</li>
+                <li>Si cantas sin tenerlo es <b>canto falso</b>: pierdes 10 fichas.</li>
+                <li>Si dos jugadores cantan con la misma bola, se reparten el premio.</li>
+              </ol>
+              <div class="list">
+                <div class="row"><div>Línea<small>Primera fila completa de la partida</small></div><b>+40</b></div>
+                <div class="row"><div>Bingo<small>Cartón completo</small></div><b>+150</b></div>
+                <div class="row"><div>Canto falso</div><b>−10</b></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- STATS -->
+          <section class="screen" data-screen="stats" hidden>
+            <div class="topbar"><button class="back" data-go="home" aria-label="Volver" type="button">‹</button><h2>Mis números</h2></div>
+            <div class="pad" style="padding-top:6px">
+              <div class="statgrid" id="statGrid"></div>
+              <p class="small">En la app real se guardan en tu cuenta y hay logros: “Ojo de halcón” (bingo sin dejarte ningún número), “Madrugador” (línea antes de la bola 20)…</p>
+            </div>
+          </section>
+
+        </div>
+        <div class="toast" id="toast" hidden></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= DOCS ================= -->
+  <main class="docs">
+    <header>
+      <h1>MiBingo, <em>primer boceto</em></h1>
+      <p class="lede">Un bingo contra rivales de la casa, con crupier que canta las bolas y cartones que se marcan a mano. El teléfono de la izquierda funciona de verdad: crea una cuenta de mentira, elige cartones y juega una partida entera.</p>
+    </header>
+
+    <section>
+      <h2>Cómo he entendido el bingo loto</h2>
+      <p>El bingo español clásico usa 90 bolas y cartones de 3×9. Como quieres bolas del 1 al 100, lo he adaptado a <b>10 columnas</b>. Si tu bingo loto funciona distinto, dímelo y lo cambio.</p>
+      <div class="rules">
+        <div class="samplewrap">
+          <div class="colnums"><span>1-10</span><span>11-20</span><span>21-30</span><span>31-40</span><span>41-50</span><span>51-60</span><span>61-70</span><span>71-80</span><span>81-90</span><span>91-100</span></div>
+          <div id="docCard"></div>
+        </div>
+        <ul>
+          <li>Cartón de <b>3 filas × 10 columnas</b> con <b>15 números</b>: 5 por fila, el resto huecos.</li>
+          <li>Cada columna es una decena (1–10, 11–20… 91–100) y lleva 1 o 2 números, ordenados de arriba abajo.</li>
+          <li>Los números de cada cartón y el orden de las bolas son aleatorios, y ninguna bola se repite en la partida.</li>
+          <li>Premios: <b>Línea</b> (la primera fila completa de la partida) y <b>Bingo</b> (cartón completo, termina la partida).</li>
+          <li>Hay que <b>marcar a mano</b> y <b>cantar</b> pulsando el botón. Si no cantas, el premio se lo lleva otro.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>Lo que puedes probar ya</h2>
+      <ul>
+        <li><b>Acceso</b> con Google o correo, y perfil la primera vez (nombre, fecha de nacimiento y color de avatar).</li>
+        <li><b>Partida rápida</b> (4 jugadores, 2 cartones) y <b>personalizada</b> (2–6 jugadores, 1–5 cartones, velocidad y nivel de rivales).</li>
+        <li><b>Elección de cartones</b>: se muestran 10, eliges hasta el máximo, puedes pedir otros 10 o que se elijan al azar.</li>
+        <li><b>La mesa</b>: crupier arriba, bombo en el centro, rivales alrededor con su avatar y un aviso de “le falta 1” para meter tensión.</li>
+        <li><b>Pausa y reanudar</b>, con cartones tapados. Pausa automática si sales de la app. Puedes salir al menú y continuar luego.</li>
+        <li><b>Tablero de bolas</b> con todos los números salidos, últimas 5 bolas a la vista y <b>voz del crupier</b> con frases típicas.</li>
+        <li><b>Resultado</b> con fichas ganadas y tu “atención”: cuántos números se te escaparon.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Funciones que te propongo</h2>
+      <div class="feat">
+        <div style="--c:var(--gold)">
+          <h3>Para que enganche</h3>
+          <ul>
+            <li>Rivales con personalidad: la abuela que no falla una, el despistado que canta tarde.</li>
+            <li>Fichas virtuales, reto del día y racha de días seguidos.</li>
+            <li>Logros: “Ojo de halcón”, “Madrugador”, “Remontada”.</li>
+            <li>Tapetes, colores de cartón y avatares desbloqueables.</li>
+            <li>Más premios opcionales: dos líneas, cuatro esquinas.</li>
+          </ul>
+        </div>
+        <div style="--c:#7cc7a2">
+          <h3>Para que sea fácil</h3>
+          <ul>
+            <li>Tutorial jugable de un minuto la primera vez.</li>
+            <li>Ayudas configurables: pistas, resaltar al salir, números grandes.</li>
+            <li>Velocidad del crupier y pausa siempre a mano.</li>
+            <li>Modo alto contraste y apto para daltónicos.</li>
+            <li>Instalable en el móvil como app (PWA), sin pasar por tiendas.</li>
+          </ul>
+        </div>
+        <div style="--c:#8fb4ff">
+          <h3>Más adelante</h3>
+          <ul>
+            <li>Salas online con amigos con un código de 4 letras.</li>
+            <li>Ranking semanal entre amigos.</li>
+            <li>Partida guardada en la nube para seguir en otro dispositivo.</li>
+            <li>Chat de reacciones rápidas en la mesa.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Decisiones que necesito de ti</h2>
+      <div class="qs">
+        <div class="q"><b>¿“4 jugadores” te incluye a ti?</b><span>En el boceto sí: tú y 3 rivales. El máximo de 6 sería tú y 5 rivales.</span></div>
+        <div class="q"><b>¿Eliges “hasta” N cartones o exactamente N?</b><span>En el boceto, hasta N y como mínimo 1. Los rivales siempre llevan N.</span></div>
+        <div class="q"><b>¿Edad o fecha de nacimiento?</b><span>Propongo fecha: la edad se actualiza sola. En España, por debajo de 14 años hace falta el consentimiento de los padres para guardar datos, así que conviene fijar una edad mínima o un aviso.</span></div>
+        <div class="q"><b>¿Fichas virtuales sí o no?</b><span>Dan mucho juego. Sin dinero real ni compras canjeables, para que no cuente como juego de apuestas.</span></div>
+        <div class="q"><b>¿Solo línea y bingo?</b><span>Es lo clásico. Dos líneas o esquinas pueden ir como opción en la partida personalizada.</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Tecnología recomendada</h2>
+      <p>Firebase encaja bien y te lo recomiendo. Lo montaría así:</p>
+      <dl class="stack">
+        <dt>App</dt><dd>Web con React + TypeScript (Vite), instalable como PWA. Funciona en móvil y ordenador.</dd>
+        <dt>Acceso</dt><dd>Firebase Authentication con Google y con correo y contraseña, con verificación del correo.</dd>
+        <dt>Datos</dt><dd>Firestore para el perfil, las fichas, las estadísticas y la partida en pausa.</dd>
+        <dt>Partida</dt><dd>Contra rivales de la casa se calcula en el propio móvil: va instantánea y aguanta sin cobertura. Para jugar online con amigos, las bolas las sacaría el servidor (Cloud Functions) para evitar trampas.</dd>
+        <dt>Publicación</dt><dd>Firebase Hosting, con un enlace de pruebas separado para tus testers. El plan gratuito llega para la fase de pruebas.</dd>
+      </dl>
+    </section>
+
+    <section>
+      <h2>Siguientes pasos</h2>
+      <ol class="steps">
+        <li>Repasas el boceto y me respondes a las 5 decisiones.</li>
+        <li>Construyo la versión 1 en el repositorio con lo que acordemos.</li>
+        <li>Creas el proyecto en Firebase y me pasas la configuración web.</li>
+        <li>La publico en un enlace de pruebas para tus testers.</li>
+      </ol>
+    </section>
+  </main>
+</div>
+
+<script>
+(() => {
+"use strict";
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+
+/* ---------- random ---------- */
+const rnd = n => { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] % n; };
+const between = (a, b) => a + rnd(b - a + 1);
+const shuffle = arr => { for (let i = arr.length - 1; i > 0; i--) { const j = rnd(i + 1); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; };
+
+/* ---------- data ---------- */
+const TINTS = ["#fde2c8", "#d6ebf7", "#e3f1cf", "#f8d8e2", "#e9def8"];
+const BALLC = ["#e0442e", "#f08a24", "#e0a91f", "#6fa83a", "#1f9d74", "#1aa3c2", "#3b6fd8", "#7b55d6", "#c94ca0", "#8a6a4a"];
+const ballColor = n => BALLC[Math.min(9, Math.floor((n - 1) / 10))];
+const AV_COLORS = ["#e0442e", "#f08a24", "#1f9d74", "#3b6fd8", "#7b55d6", "#c94ca0"];
+const PERSONAS = [
+  { n: "Abuela Pura", i: "AP", c: "#c94ca0" }, { n: "Paco", i: "PA", c: "#3b6fd8" },
+  { n: "Mari Carmen", i: "MC", c: "#f08a24" }, { n: "Don Ramón", i: "DR", c: "#1f9d74" },
+  { n: "Lola", i: "LO", c: "#7b55d6" }, { n: "Toni", i: "TO", c: "#1aa3c2" }, { n: "Rocío", i: "RO", c: "#8a6a4a" }
+];
+const LEVELS = {
+  despistados: { hit: .72, min: 900, max: 2600 },
+  normales:    { hit: .9,  min: 700, max: 1900 },
+  expertos:    { hit: 1,   min: 400, max: 1100 }
+};
+const SPEED = { lento: 6000, normal: 4200, rapido: 2600 };
+const PHRASES = { 1: "el primerito", 15: "la niña bonita", 22: "los dos patitos", 33: "la edad de Cristo", 50: "medio siglo", 90: "el abuelo", 100: "¡el centenario!" };
+const PRIZE = { linea: 40, bingo: 150, falso: -10 };
+
+const app = {
+  user: { name: "", birth: "", color: 0 },
+  coins: 500,
+  cfg: { players: 4, cards: 2, speed: "normal", bots: "normales" },
+  settings: { voice: true, phrases: true, sound: true, vibe: true, hints: true, highlight: false, big: false, autopause: true },
+  stats: { games: 0, lines: 0, bingos: 0, marked: 0, missed: 0 },
+  screen: "login", settingsReturn: "home"
+};
+let g = null; // current game
+
+/* ---------- cards ---------- */
+function genCard() {
+  for (;;) {
+    const counts = Array(10).fill(1);
+    shuffle([...Array(10).keys()]).slice(0, 5).forEach(c => counts[c] = 2);
+    const rows = [0, 0, 0], colRows = [];
+    for (let c = 0; c < 10; c++) {
+      const r = shuffle([0, 1, 2]).slice(0, counts[c]).sort();
+      colRows.push(r); r.forEach(x => rows[x]++);
+    }
+    if (rows.some(x => x !== 5)) continue;
+    const grid = [0, 1, 2].map(() => Array(10).fill(0));
+    for (let c = 0; c < 10; c++) {
+      const pool = shuffle(Array.from({ length: 10 }, (_, i) => c * 10 + i + 1)).slice(0, counts[c]).sort((a, b) => a - b);
+      colRows[c].forEach((r, i) => grid[r][c] = pool[i]);
+    }
+    return { grid, nums: new Set(grid.flat().filter(Boolean)), serie: between(1, 9), no: String(between(1, 9999)).padStart(4, "0"), tint: rnd(5), marked: new Set() };
+  }
+}
+const lineLeft = c => Math.min(...c.grid.map(row => row.filter(n => n && !c.marked.has(n)).length));
+const bingoLeft = c => 15 - c.marked.size;
+const hasLine = c => lineLeft(c) === 0;
+const hasBingo = c => bingoLeft(c) === 0;
+
+function cardEl(card, ci = 0, interactive = false) {
+  const el = document.createElement("div");
+  el.className = "card"; el.style.setProperty("--tint", TINTS[card.tint]);
+  el.innerHTML = `<div class="card-head"><span>Serie ${card.serie}</span><b>MiBingo</b><span>Nº ${card.no}</span></div>`;
+  const grid = document.createElement("div"); grid.className = "grid";
+  for (let r = 0; r < 3; r++) for (let c = 0; c < 10; c++) {
+    const n = card.grid[r][c];
+    const cell = document.createElement(interactive && n ? "button" : "span");
+    cell.className = "cell" + (n ? "" : " empty");
+    if (n) {
+      cell.textContent = n; cell.dataset.n = n; cell.dataset.ci = ci;
+      if (interactive) { cell.type = "button"; cell.setAttribute("aria-label", "Número " + n); }
+      if (card.marked.has(n)) cell.classList.add("marked");
+    }
+    grid.appendChild(cell);
+  }
+  el.appendChild(grid);
+  return el;
+}
+const ballEl = (n, s) => { const d = document.createElement("div"); d.className = "ball"; d.style.setProperty("--bc", ballColor(n)); if (s) d.style.setProperty("--s", s + "px"); d.innerHTML = `<b>${n}</b>`; return d; };
+
+/* ---------- feedback ---------- */
+let actx;
+function beep(f = 660, d = .08, type = "sine", vol = .07) {
+  if (!app.settings.sound) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = actx.createOscillator(), gn = actx.createGain();
+    o.type = type; o.frequency.value = f; gn.gain.value = vol;
+    gn.gain.exponentialRampToValueAtTime(.0001, actx.currentTime + d);
+    o.connect(gn).connect(actx.destination); o.start(); o.stop(actx.currentTime + d);
+  } catch (e) {}
+}
+function fanfare() { [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => beep(f, .16, "triangle", .08), i * 120)); }
+function vibe(p) { if (app.settings.vibe && navigator.vibrate) try { navigator.vibrate(p); } catch (e) {} }
+function say(t) {
+  if (!app.settings.voice || !("speechSynthesis" in window)) return;
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(t); u.lang = "es-ES"; u.rate = 1.03;
+    const v = speechSynthesis.getVoices().find(v => v.lang && v.lang.toLowerCase().startsWith("es"));
+    if (v) u.voice = v;
+    speechSynthesis.speak(u);
+  } catch (e) {}
+}
+let toastT;
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.hidden = false; t.style.animation = "none"; void t.offsetWidth; t.style.animation = ""; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2200); }
+
+/* ---------- navigation ---------- */
+function show(name) {
+  if (app.screen === "game" && name !== "game" && name !== "settings" && g && !g.over && !g.paused) pauseGame();
+  $$(".screen").forEach(s => s.hidden = s.dataset.screen !== name);
+  app.screen = name;
+  $$("#jump button").forEach(b => b.classList.toggle("on", b.dataset.jump === name || (name === "settings" && false)));
+  if (name === "home") renderHome();
+  if (name === "custom") renderCustom();
+  if (name === "stats") renderStats();
+  if (name === "settings") renderSettings();
+  if (name === "profile") renderProfile();
+  const sc = document.querySelector(`.screen[data-screen="${name}"]`); if (sc) sc.scrollTop = 0;
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-go]"); if (b) show(b.dataset.go);
+});
+$("#jump").addEventListener("click", e => {
+  const b = e.target.closest("[data-jump]"); if (!b) return;
+  const to = b.dataset.jump;
+  if (!app.user.name && to !== "login" && to !== "profile") { app.user.name = "Lucía"; app.user.birth = "1992-03-08"; }
+  if (to === "pick") { preparePick(); }
+  if (to === "game") {
+    if (!g || g.over) { app.cfg = { ...app.cfg }; const cards = Array.from({ length: app.cfg.cards }, genCard); startGame(cards); return; }
+  }
+  if (to === "profile" && !app.user.name) app.user.name = "Lucía";
+  show(to);
+});
+
+/* ---------- login & profile ---------- */
+let signIn = false;
+$("#googleBtn").onclick = () => { if (!app.user.name) app.user.name = "Lucía"; toast("Cuenta de Google conectada"); show(app.user.birth ? "home" : "profile"); };
+$("#loginSwap").onclick = e => { e.preventDefault(); signIn = !signIn; $("#emailBtn").textContent = signIn ? "Entrar" : "Crear cuenta"; $("#loginSwapTxt").textContent = signIn ? "¿Aún no tienes cuenta?" : "¿Ya tienes cuenta?"; $("#loginSwap").textContent = signIn ? "Crear cuenta" : "Entrar"; };
+$("#emailForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const em = $("#email").value.trim(), pw = $("#pass").value;
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) return toast("Escribe un correo válido, por ejemplo tu@correo.com");
+  if (pw.length < 8) return toast("La contraseña necesita al menos 8 caracteres");
+  if (!signIn) toast("Te hemos enviado un correo para verificar la cuenta");
+  show(app.user.birth ? "home" : "profile");
+});
+function initials(n) { return (n || "?").trim().split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase() || "?"; }
+function renderProfile() {
+  $("#pName").value = app.user.name || "";
+  $("#pBirth").value = app.user.birth || "";
+  const sw = $("#swatches"); sw.innerHTML = "";
+  AV_COLORS.forEach((c, i) => { const b = document.createElement("button"); b.type = "button"; b.style.setProperty("--c", c); b.setAttribute("aria-label", "Color " + (i + 1)); b.className = i === app.user.color ? "on" : ""; b.onclick = () => { app.user.color = i; renderProfile(); }; sw.appendChild(b); });
+  updAvatar(); updAge();
+}
+function updAvatar() { const a = $("#pAvatar"); a.style.setProperty("--c", AV_COLORS[app.user.color]); a.textContent = initials($("#pName").value); }
+function ageOf(d) { if (!d) return null; const b = new Date(d + "T12:00:00"), n = new Date(); let a = n.getFullYear() - b.getFullYear(); const m = n.getMonth() - b.getMonth(); if (m < 0 || (m === 0 && n.getDate() < b.getDate())) a--; return a; }
+function updAge() {
+  const a = ageOf($("#pBirth").value), o = $("#ageOut");
+  if (a === null || isNaN(a)) { o.textContent = "Usamos la fecha para calcular tu edad; nadie más la ve."; return; }
+  o.textContent = a < 14 ? `Tienes ${a} años: pediremos permiso a un adulto.` : `Tienes ${a} años.`;
+}
+$("#pName").addEventListener("input", updAvatar);
+$("#pBirth").addEventListener("input", updAge);
+$("#pSave").onclick = () => {
+  const n = $("#pName").value.trim(), b = $("#pBirth").value, a = ageOf(b), err = $("#pErr");
+  if (n.length < 2) { err.textContent = "Escribe tu nombre, al menos 2 letras."; err.hidden = false; return; }
+  if (!b || isNaN(a) || a < 0 || a > 120) { err.textContent = "Elige tu fecha de nacimiento."; err.hidden = false; return; }
+  err.hidden = true; app.user.name = n; app.user.birth = b; show("home");
+};
+
+/* ---------- home ---------- */
+function renderHome() {
+  const a = $("#hAvatar"); a.style.setProperty("--c", AV_COLORS[app.user.color]); a.textContent = initials(app.user.name);
+  $("#hName").textContent = app.user.name || "jugador";
+  $("#hCoins").textContent = app.coins;
+  const r = $("#resume");
+  if (g && !g.over) { r.hidden = false; $("#resumeTxt").textContent = `Partida en pausa · bola ${g.drawn.length}`; } else r.hidden = true;
+}
+$("#resumeBtn").onclick = () => show("game");
+$("#goQuick").onclick = () => { app.cfg = { players: 4, cards: 2, speed: app.cfg.speed, bots: "normales" }; app.pickFrom = "home"; preparePick(); show("pick"); };
+$("#goCustom").onclick = () => show("custom");
+$("#goSettings").onclick = () => { app.settingsReturn = "home"; show("settings"); };
+$("#logout").onclick = () => { show("login"); toast("Sesión cerrada"); };
+
+/* ---------- custom ---------- */
+function renderCustom() {
+  $$(".stepper").forEach(s => s.querySelector("output").textContent = app.cfg[s.dataset.key]);
+  $$(".seg").forEach(s => s.querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.v === app.cfg[s.dataset.key])));
+  const r = app.cfg.players - 1;
+  $("#cSummary").innerHTML = `Tú + <b>${r} ${r === 1 ? "rival" : "rivales"}</b> · <b>${app.cfg.players * app.cfg.cards} cartones</b> en juego · una bola cada <b>${(SPEED[app.cfg.speed] / 1000).toFixed(1).replace(".", ",")} s</b>`;
+}
+$$(".stepper").forEach(s => s.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  const k = s.dataset.key, v = Math.max(+s.dataset.min, Math.min(+s.dataset.max, app.cfg[k] + +b.dataset.d));
+  app.cfg[k] = v; renderCustom(); beep(500, .04);
+}));
+$$(".seg").forEach(s => s.addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; app.cfg[s.dataset.key] = b.dataset.v; renderCustom(); }));
+$("#customGo").onclick = () => { app.pickFrom = "custom"; preparePick(); show("pick"); };
+
+/* ---------- pick ---------- */
+const pick = { cards: [], sel: new Set() };
+function preparePick() { pick.cards = Array.from({ length: 10 }, genCard); pick.sel.clear(); renderPick(); }
+function renderPick() {
+  const max = app.cfg.cards, list = $("#pickList"); list.innerHTML = "";
+  $("#pickTitle").textContent = max === 1 ? "Elige 1 cartón" : `Elige hasta ${max}`;
+  pick.cards.forEach((c, i) => {
+    const w = document.createElement("div"); w.className = "pick" + (pick.sel.has(i) ? " on" : "");
+    w.tabIndex = 0; w.setAttribute("role", "button"); w.setAttribute("aria-pressed", pick.sel.has(i));
+    w.innerHTML = `<span class="tick">✓</span>`; w.appendChild(cardEl(c));
+    w.onclick = () => togglePick(i);
+    w.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); togglePick(i); } };
+    list.appendChild(w);
+  });
+  updPick();
+}
+function updPick() {
+  $("#pickCount").textContent = `${pick.sel.size}/${app.cfg.cards}`;
+  $("#pickGo").disabled = pick.sel.size === 0;
+  $("#pickGo").textContent = pick.sel.size ? `A la mesa (${pick.sel.size})` : "A la mesa";
+  $$("#pickList .pick").forEach((w, i) => { w.classList.toggle("on", pick.sel.has(i)); w.setAttribute("aria-pressed", pick.sel.has(i)); });
+}
+function togglePick(i) {
+  if (pick.sel.has(i)) pick.sel.delete(i);
+  else if (pick.sel.size < app.cfg.cards) { pick.sel.add(i); beep(720, .05); }
+  else { toast(`Máximo ${app.cfg.cards}. Quita uno para cambiarlo.`); return; }
+  updPick();
+}
+$("#pickNew").onclick = () => { preparePick(); $("#pickList").scrollTop = 0; toast("Diez cartones nuevos"); };
+$("#pickRand").onclick = () => { pick.sel = new Set(shuffle([...Array(10).keys()]).slice(0, app.cfg.cards)); updPick(); };
+$("#pickBack").onclick = () => show(app.pickFrom === "custom" ? "custom" : "home");
+$("#pickGo").onclick = () => startGame([...pick.sel].sort((a, b) => a - b).map(i => pick.cards[i]));
+
+/* ---------- scheduler (pausable timers) ---------- */
+class Scheduler {
+  constructor() { this.tasks = new Set(); this.paused = false; }
+  add(fn, ms) { const t = { fn, remaining: ms, start: 0, id: 0 }; this.tasks.add(t); if (!this.paused) this._run(t); return t; }
+  _run(t) { t.start = performance.now(); t.id = setTimeout(() => { this.tasks.delete(t); t.fn(); }, t.remaining); }
+  cancel(t) { if (t && this.tasks.has(t)) { clearTimeout(t.id); this.tasks.delete(t); } }
+  pause() { if (this.paused) return; this.paused = true; const now = performance.now(); this.tasks.forEach(t => { clearTimeout(t.id); t.remaining = Math.max(0, t.remaining - (now - t.start)); }); }
+  resume() { if (!this.paused) return; this.paused = false; this.tasks.forEach(t => this._run(t)); }
+  clear() { this.tasks.forEach(t => clearTimeout(t.id)); this.tasks.clear(); }
+}
+
+/* ---------- game ---------- */
+const ME = { me: true };
+function startGame(myCards) {
+  if (g) g.sched.clear();
+  try { speechSynthesis.cancel(); } catch (e) {}
+  const cfg = { ...app.cfg };
+  myCards.forEach(c => c.marked = new Set());
+  const personas = shuffle(PERSONAS.slice()).slice(0, cfg.players - 1);
+  g = {
+    cfg, bag: shuffle(Array.from({ length: 100 }, (_, i) => i + 1)), drawn: [], drawnSet: new Set(),
+    phase: "linea", paused: false, over: false, claim: null, drawTask: null,
+    me: { cards: myCards }, hints: 3, earned: 0, falseClaims: 0, errors: 0,
+    bots: personas.map(p => ({ ...p, cards: Array.from({ length: cfg.cards }, () => { const c = genCard(); c.missed = new Set(); return c; }), claimFor: null })),
+    lineWinners: [], bingoWinners: [], sched: new Scheduler()
+  };
+  ME.name = app.user.name || "Tú";
+  buildGame();
+  show("game");
+  $("#callText").textContent = "¡Atentos, que empezamos!";
+  say("Atentos, que empezamos");
+  g.drawTask = g.sched.add(drawBall, 2200);
+}
+
+function buildGame() {
+  // seats
+  const seats = $("#seats"); seats.innerHTML = "";
+  const k = g.bots.length, L = Math.ceil(k / 2), R = k - L, angles = [];
+  for (let i = 0; i < L; i++) angles.push(125 + 110 * (i + .5) / L);
+  for (let i = 0; i < R; i++) angles.push(55 - 110 * (i + .5) / R);
+  g.bots.forEach((b, i) => {
+    const a = angles[i] * Math.PI / 180;
+    const x = Math.max(12, Math.min(88, 50 + 43 * Math.cos(a))), y = 57 + 37 * Math.sin(a);
+    const s = document.createElement("div"); s.className = "seat"; s.style.left = x + "%"; s.style.top = y + "%";
+    s.innerHTML = `<div class="av" style="--c:${b.c}">${b.i}</div><div class="nm">${b.n}</div><div class="pill"></div>`;
+    b.el = s; seats.appendChild(s); updSeat(b);
+  });
+  const me = document.createElement("div"); me.className = "seat me"; me.style.left = "50%"; me.style.top = "93%";
+  me.innerHTML = `<div class="av" style="--c:${AV_COLORS[app.user.color]}">${initials(app.user.name || "Tú")}</div><div class="nm">Tú</div>`;
+  ME.el = me; seats.appendChild(me);
+  // centre
+  $("#bombo").innerHTML = ""; $("#lastBalls").innerHTML = ""; $("#banner").hidden = true;
+  $("#dealerSt").textContent = "Crupier";
+  // cards
+  const box = $("#myCards"); box.innerHTML = ""; box.classList.remove("blur");
+  $("#phone").classList.toggle("big", app.settings.big);
+  g.me.cards.forEach((c, i) => box.appendChild(cardEl(c, i, true)));
+  // board
+  const bd = $("#board"); bd.innerHTML = "";
+  for (let n = 1; n <= 100; n++) { const s = document.createElement("span"); s.textContent = n; s.id = "bd" + n; bd.appendChild(s); }
+  $("#boardSheet").hidden = true; $("#pauseOv").hidden = true; $("#quitOv").hidden = true; $("#resultOv").hidden = true;
+  $("#hintBtn").hidden = !app.settings.hints;
+  updTop();
+}
+
+function updTop() {
+  $("#gCount").textContent = "Bola " + g.drawn.length;
+  $("#gLeft").textContent = 100 - g.drawn.length;
+  const ph = $("#gPhase");
+  ph.textContent = g.phase === "linea" ? "Se juega LÍNEA" : "Se juega BINGO";
+  ph.classList.toggle("bingo", g.phase !== "linea");
+  $("#claimL").disabled = g.phase !== "linea";
+  $("#hintLeft").textContent = g.hints;
+}
+function updSeat(b) {
+  const left = Math.min(...b.cards.map(c => g.phase === "linea" ? lineLeft(c) : bingoLeft(c)));
+  const p = b.el.querySelector(".pill");
+  p.textContent = left === 0 ? "¡lo tiene!" : left === 1 ? "¡le falta 1!" : `le faltan ${left}`;
+  p.classList.toggle("hot", left <= 1);
+}
+function bubble(who, txt) {
+  const el = who.el; if (!el) return;
+  el.querySelectorAll(".bub").forEach(x => x.remove());
+  const b = document.createElement("span"); b.className = "bub"; b.textContent = txt; el.appendChild(b);
+  setTimeout(() => b.remove(), 1800);
+}
+
+function callTexts(n) {
+  const p = app.settings.phrases && PHRASES[n];
+  const disp = p ? `El ${n}, ${p}` : `El ${n}`;
+  let spoken = `El ${n}`;
+  if (p) spoken += `, ${p}`; else if (n > 10 && n < 100 && n % 10) spoken += `. ${Math.floor(n / 10)}, ${n % 10}`;
+  return { show: disp, spoken };
+}
+
+function drawBall() {
+  if (!g || g.over) return;
+  g.drawTask = null;
+  if (!g.bag.length) { finishGame(); return; }
+  const n = g.bag.pop(); g.drawn.push(n); g.drawnSet.add(n);
+  // ball
+  const bo = $("#bombo"); bo.innerHTML = ""; const b = ballEl(n); b.classList.add("drop"); bo.appendChild(b);
+  const t = callTexts(n); $("#callText").textContent = t.show; say(t.spoken);
+  beep(880, .06, "triangle"); setTimeout(() => beep(1180, .05, "triangle"), 70);
+  // strip
+  const lb = $("#lastBalls"); lb.innerHTML = "";
+  g.drawn.slice(-6, -1).reverse().forEach(x => lb.appendChild(ballEl(x)));
+  if (!lb.children.length) lb.innerHTML = `<span class="small">—</span>`;
+  // board
+  $$("#board .lastn").forEach(s => s.classList.remove("lastn"));
+  const bs = $("#bd" + n); bs.classList.add("on", "lastn");
+  // assisted highlight
+  if (app.settings.highlight) $$(`#myCards .cell[data-n="${n}"]`).forEach(c => { c.classList.add("just"); setTimeout(() => c.classList.remove("just"), 1800); });
+  // bots
+  const lv = LEVELS[g.cfg.bots];
+  g.bots.forEach(bot => bot.cards.forEach(c => {
+    c.missed.forEach(m => { if (rnd(100) < 45) { c.missed.delete(m); g.sched.add(() => botMark(bot, c, m), between(lv.min, lv.max)); } });
+    if (c.nums.has(n)) {
+      if (rnd(1000) < lv.hit * 1000) g.sched.add(() => botMark(bot, c, n), between(lv.min, lv.max));
+      else c.missed.add(n);
+    }
+  }));
+  updTop();
+  if (!g.claim) g.drawTask = g.sched.add(drawBall, SPEED[g.cfg.speed]);
+}
+
+function botMark(bot, c, n) {
+  if (!g || g.over) return;
+  c.marked.add(n); updSeat(bot);
+  if (bot.claimFor === g.phase) return;
+  const ok = g.phase === "linea" ? bot.cards.some(hasLine) : bot.cards.some(hasBingo);
+  if (ok) { bot.claimFor = g.phase; const ph = g.phase; g.sched.add(() => { if (g && !g.over && g.phase === ph) claim(bot, ph); }, between(250, 900)); }
+}
+
+function claim(who, type) {
+  if (!g || g.over || g.phase !== type) return;
+  const label = type === "linea" ? "¡LÍNEA!" : "¡BINGO!";
+  bubble(who, label);
+  if (!g.claim) {
+    g.claim = { type, winners: [who] };
+    g.sched.cancel(g.drawTask); g.drawTask = null;
+    $("#banTitle").textContent = label;
+    $("#banSub").textContent = (who.me ? "La cantas tú" : `La canta ${who.n}`) + " · el crupier comprueba…";
+    $("#banner").hidden = false;
+    $("#dealerSt").textContent = "Comprobando";
+    say(type === "linea" ? "¡Línea! Comprobamos" : "¡Bingo! Comprobamos");
+    beep(392, .2, "square", .05);
+    g.sched.add(resolveClaim, 2000);
+  } else if (g.claim.type === type && !g.claim.winners.includes(who)) {
+    g.claim.winners.push(who);
+    $("#banSub").textContent = `¡Y también ${who.me ? "tú" : who.n}! Se reparte el premio`;
+  }
+}
+
+function winnersText(ws) { return ws.map(w => w.me ? "tú" : w.n).join(" y "); }
+function resolveClaim() {
+  if (!g || !g.claim) return;
+  const { type, winners } = g.claim; g.claim = null;
+  const meWon = winners.includes(ME);
+  const prize = Math.round(PRIZE[type] / winners.length);
+  if (meWon) { g.earned += prize; fanfare(); vibe([60, 40, 120]); }
+  if (type === "linea") {
+    g.lineWinners = winners;
+    if (meWon) app.stats.lines++;
+    $("#banTitle").textContent = "Línea correcta";
+    $("#banSub").textContent = (meWon ? `¡Enhorabuena! +${prize} fichas` : `Para ${winnersText(winners)}`) + " · ahora, a por el bingo";
+    $("#dealerSt").textContent = "Crupier";
+    say("Línea correcta. Seguimos para bingo");
+    g.phase = "bingo";
+    g.bots.forEach(b => { b.claimFor = null; updSeat(b); });
+    $$("#myCards .card").forEach((el, i) => el.classList.toggle("lined", hasLine(g.me.cards[i]) && meWon));
+    updTop();
+    g.sched.add(() => { $("#banner").hidden = true; }, 2200);
+    g.drawTask = g.sched.add(drawBall, 2600);
+    // a bot might already have bingo
+    g.bots.forEach(b => { if (b.cards.some(hasBingo)) { b.claimFor = "bingo"; g.sched.add(() => claim(b, "bingo"), between(2800, 3400)); } });
+  } else {
+    g.bingoWinners = winners;
+    if (meWon) app.stats.bingos++;
+    finishGame();
+  }
+}
+
+function userClaim(type) {
+  if (!g || g.over || g.paused) return;
+  if (g.phase !== type) { toast("La línea ya se ha cantado. Ahora va el bingo."); return; }
+  if (g.claim && g.claim.winners.includes(ME)) return;
+  const ok = g.me.cards.some(type === "linea" ? hasLine : hasBingo);
+  if (ok) { claim(ME, type); vibe(40); }
+  else {
+    g.falseClaims++; g.earned += PRIZE.falso; bubble(ME, "¡ups!");
+    toast(`Canto falso: no tienes ${type === "linea" ? "línea" : "bingo"} marcado. −10 fichas`);
+    beep(180, .25, "sawtooth", .05); vibe([30, 30, 30]);
+  }
+}
+$("#claimL").onclick = () => userClaim("linea");
+$("#claimB").onclick = () => userClaim("bingo");
+
+$("#myCards").addEventListener("click", e => {
+  const cell = e.target.closest(".cell[data-n]"); if (!cell || !g || g.over || g.paused) return;
+  const n = +cell.dataset.n, card = g.me.cards[+cell.dataset.ci];
+  if (!g.drawnSet.has(n)) {
+    g.errors++; cell.classList.remove("shake"); void cell.offsetWidth; cell.classList.add("shake");
+    setTimeout(() => cell.classList.remove("shake"), 400);
+    toast(`El ${n} todavía no ha salido`); beep(200, .12, "square", .04); return;
+  }
+  if (card.marked.has(n)) { card.marked.delete(n); cell.classList.remove("marked"); return; }
+  card.marked.add(n); cell.classList.add("marked"); cell.classList.remove("hint");
+  beep(620 + rnd(120), .05); vibe(15);
+});
+
+$("#hintBtn").onclick = () => {
+  if (!g || g.over || g.paused) return;
+  if (g.hints <= 0) { toast("No te quedan pistas en esta partida"); return; }
+  const cells = $$("#myCards .cell[data-n]").filter(c => g.drawnSet.has(+c.dataset.n) && !g.me.cards[+c.dataset.ci].marked.has(+c.dataset.n));
+  if (!cells.length) { toast("Lo llevas todo al día. ¡Bien visto!"); return; }
+  g.hints--; updTop();
+  cells.forEach(c => { c.classList.add("hint"); setTimeout(() => c.classList.remove("hint"), 3000); });
+  cells[0].scrollIntoView({ block: "nearest", behavior: "smooth" });
+  toast(cells.length === 1 ? "Se te ha pasado 1 número" : `Se te han pasado ${cells.length} números`);
+};
+
+$("#boardBtn").onclick = () => { $("#boardSheet").hidden = false; };
+$("#boardClose").onclick = () => { $("#boardSheet").hidden = true; };
+
+/* pause */
+function pauseGame() {
+  if (!g || g.over || g.paused) return;
+  g.paused = true; g.sched.pause();
+  try { speechSynthesis.cancel(); } catch (e) {}
+  $("#myCards").classList.add("blur");
+  $("#pauseInfo").textContent = `Vamos por la bola ${g.drawn.length}. El crupier espera y tus cartones están tapados.`;
+  $("#pauseOv").hidden = false;
+}
+function resumeGame() {
+  if (!g || !g.paused) return;
+  $("#pauseOv").hidden = true; $("#myCards").classList.remove("blur");
+  g.paused = false;
+  $("#callText").textContent = "Seguimos…";
+  g.sched.resume();
+  if (!g.drawTask && !g.claim) g.drawTask = g.sched.add(drawBall, 1500);
+}
+$("#pauseBtn").onclick = pauseGame;
+$("#resumeGame").onclick = resumeGame;
+$("#pauseSettings").onclick = () => { app.settingsReturn = "game"; show("settings"); };
+$("#pauseExit").onclick = () => show("home");
+$("#pauseQuit").onclick = () => { $("#quitOv").hidden = false; };
+$("#quitNo").onclick = () => { $("#quitOv").hidden = true; };
+$("#quitYes").onclick = () => { g.sched.clear(); g.over = true; $("#quitOv").hidden = true; show("home"); toast("Partida abandonada"); };
+document.addEventListener("visibilitychange", () => { if (document.hidden && app.settings.autopause && app.screen === "game") pauseGame(); });
+
+/* finish */
+function finishGame() {
+  g.over = true; g.sched.clear();
+  try { speechSynthesis.cancel(); } catch (e) {}
+  $("#banner").hidden = true; $("#pauseOv").hidden = true;
+  const missed = [];
+  g.me.cards.forEach(c => c.nums.forEach(n => { if (g.drawnSet.has(n) && !c.marked.has(n)) missed.push(n); }));
+  const mine = g.me.cards.reduce((s, c) => s + [...c.nums].filter(n => g.drawnSet.has(n)).length, 0);
+  const att = mine ? Math.round(100 * (mine - missed.length) / mine) : 100;
+  app.coins = Math.max(0, app.coins + g.earned);
+  app.stats.games++; app.stats.marked += mine - missed.length; app.stats.missed += missed.length;
+  const meBingo = g.bingoWinners.includes(ME);
+  const lastN = g.drawn[g.drawn.length - 1];
+  const title = meBingo ? "¡Has cantado bingo!" : g.bingoWinners.length ? `Bingo para ${winnersText(g.bingoWinners)}` : "Se acabaron las bolas";
+  if (meBingo) say("¡Bingo! Enhorabuena"); else if (g.bingoWinners.length) say(`Bingo para ${winnersText(g.bingoWinners)}`);
+  const ov = $("#resultOv"); ov.innerHTML = "";
+  if (lastN) ov.appendChild(ballEl(lastN, 70));
+  ov.insertAdjacentHTML("beforeend", `
+    <h2 style="font-size:32px">${title}</h2>
+    <p>${meBingo ? "Ni una bola se te ha resistido." : missed.length ? "La próxima va a caer." : "Estuviste atento, faltó suerte."}</p>
+    <div class="rlist">
+      <div><span>Línea</span><b>${g.lineWinners.length ? winnersText(g.lineWinners) : "nadie"}</b></div>
+      <div><span>Bingo</span><b>${g.bingoWinners.length ? winnersText(g.bingoWinners) : "nadie"}</b></div>
+      <div><span>Bolas sacadas</span><b>${g.drawn.length}</b></div>
+      <div><span>Tu atención</span><b>${att} %</b></div>
+      <div><span>Se te escaparon</span><b>${missed.length ? missed.sort((a, b) => a - b).join(", ") : "ninguno"}</b></div>
+      <div><span>Cantos falsos</span><b>${g.falseClaims}</b></div>
+      <div><span>Fichas</span><b style="color:${g.earned >= 0 ? "var(--ok)" : "#ff8d7a"}">${g.earned >= 0 ? "+" : ""}${g.earned}</b></div>
+    </div>
+    <button class="btn gold" id="again" type="button">Revancha</button>
+    <button class="btn ghost" id="toMenu" type="button">Volver al menú</button>`);
+  ov.hidden = false;
+  $("#again").onclick = () => { app.cfg = { ...g.cfg }; preparePick(); show("pick"); };
+  $("#toMenu").onclick = () => show("home");
+}
+
+/* ---------- settings & stats ---------- */
+const SET_KEYS = ["voice", "phrases", "sound", "vibe", "hints", "highlight", "big", "autopause"];
+function renderSettings() { SET_KEYS.forEach(k => $("#set-" + k).checked = app.settings[k]); }
+SET_KEYS.forEach(k => $("#set-" + k).addEventListener("change", e => {
+  app.settings[k] = e.target.checked;
+  if (k === "big") $("#phone").classList.toggle("big", e.target.checked);
+  if (k === "hints") $("#hintBtn").hidden = !e.target.checked;
+  if (k === "voice" && !e.target.checked) try { speechSynthesis.cancel(); } catch (er) {}
+}));
+$("#setBack").onclick = () => show(app.settingsReturn === "game" && g && !g.over ? "game" : "home");
+function renderStats() {
+  const s = app.stats, tot = s.marked + s.missed;
+  $("#statGrid").innerHTML = [
+    [s.games, "partidas"], [s.lines, "líneas cantadas"], [s.bingos, "bingos"], [tot ? Math.round(100 * s.marked / tot) + " %" : "—", "atención media"], [app.coins, "fichas"], [s.missed, "números escapados"]
+  ].map(([v, l]) => `<div class="stat"><b>${v}</b><span>${l}</span></div>`).join("");
+}
+
+/* ---------- docs sample ---------- */
+const sample = genCard(); sample.tint = 0;
+[...sample.grid[1]].filter(Boolean).forEach(n => sample.marked.add(n));
+sample.grid[0].filter(Boolean).slice(0, 2).forEach(n => sample.marked.add(n));
+$("#docCard").appendChild(cardEl(sample));
+
+show("login");
+})();
+</script>
