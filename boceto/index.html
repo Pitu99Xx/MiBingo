@@ -11,7 +11,7 @@
   --text:#f4ecdf; --muted:#b9ad9b; --line:rgba(244,236,223,.14);
   --felt:#0f4a3b; --felt-hi:#1b6b55; --wood:#6b4426;
   --paper:#fbf5e6; --ink:#231c17;
-  --red:#e0442e; --red-dk:#b8321f; --gold:#f3b73b; --ok:#46b47d;
+  --red:#e0442e; --red-dk:#b8321f; --gold:#f3b73b; --ok:#46b47d; --bad:#ff8d7a;
   --display:"Lilita One","Arial Rounded MT Bold","Trebuchet MS",sans-serif;
   --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
@@ -36,7 +36,7 @@ h1,h2,h3{font-family:var(--display);font-weight:400;letter-spacing:.01em;text-wr
 /* ---------- phone ---------- */
 .phone{width:390px;height:800px;border-radius:44px;background:#0b0907;padding:10px;box-shadow:0 0 0 1px #3a2e24,0 30px 80px rgba(0,0,0,.55);position:relative}
 .screenbox{position:relative;width:100%;height:100%;border-radius:34px;overflow:hidden;background:var(--room-2);display:flex;flex-direction:column}
-.notch{height:30px;flex:none;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:12px;font-weight:800;color:var(--text);background:transparent;position:relative;z-index:5}
+.notch{height:30px;flex:none;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:12px;font-weight:800;color:var(--text);position:relative;z-index:5}
 .notch::after{content:"";position:absolute;left:50%;top:6px;width:96px;height:22px;border-radius:12px;background:#0b0907;transform:translateX(-50%)}
 .screens{position:relative;flex:1;min-height:0}
 @media (max-width:440px){
@@ -52,7 +52,6 @@ h1,h2,h3{font-family:var(--display);font-weight:400;letter-spacing:.01em;text-wr
 .btn.primary{background:var(--red);color:#fff;box-shadow:0 4px 0 var(--red-dk)}
 .btn.gold{background:var(--gold);color:var(--ink);box-shadow:0 4px 0 #b7841d}
 .btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--text)}
-.btn.light{background:var(--paper);color:var(--ink)}
 .btn[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none}
 label.f{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;color:var(--muted)}
 label.f input{background:var(--room);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--text);font:inherit;font-size:16px}
@@ -62,6 +61,10 @@ label.f input:focus{border-color:var(--gold);outline:none}
 .topbar{display:flex;align-items:center;gap:10px;padding:6px 14px 4px}
 .topbar h2{font-size:22px;flex:1}
 .back{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--room);display:grid;place-items:center;font-size:20px;line-height:1}
+.coin{width:20px;height:20px;border-radius:50%;flex:none;background:radial-gradient(circle at 35% 30%,#ffe29a,var(--gold) 55%,#b7841d);box-shadow:inset 0 0 0 2px #d79a22}
+.chips{display:flex;align-items:center;gap:6px;background:var(--room);border:1px solid var(--line);border-radius:999px;padding:5px 12px 5px 6px;font-weight:800;font-variant-numeric:tabular-nums;flex:none}
+.chips.bump{animation:bump .4s}
+@keyframes bump{40%{transform:scale(1.18)}}
 
 /* ---------- balls ---------- */
 .ball{--bc:var(--red);width:var(--s,64px);height:var(--s,64px);border-radius:50%;flex:none;display:grid;place-items:center;
@@ -89,21 +92,21 @@ label.f input:focus{border-color:var(--gold);outline:none}
 .swatches{display:flex;gap:10px;justify-content:center}
 .swatches button{width:30px;height:30px;border-radius:50%;border:2px solid transparent;background:var(--c)}
 .swatches button.on{border-color:var(--text);box-shadow:0 0 0 2px var(--room-2) inset}
-.hint-box{background:var(--room);border:1px dashed var(--line);border-radius:12px;padding:10px 12px;font-size:13px;color:var(--muted)}
-.err{color:#ff8d7a;font-size:13.5px;margin:0;font-weight:600}
+.err{color:var(--bad);font-size:13.5px;margin:0;font-weight:600}
+.gift{display:flex;align-items:center;gap:10px;background:color-mix(in srgb,var(--gold) 14%,transparent);border:1px solid color-mix(in srgb,var(--gold) 40%,transparent);border-radius:12px;padding:10px 12px;font-size:13.5px}
 
 /* ---------- home ---------- */
 .home-top{display:flex;align-items:center;gap:12px;padding:8px 20px 0}
 .home-top .avatar{width:44px;height:44px;font-size:18px;margin:0;box-shadow:none}
-.home-top div{flex:1;line-height:1.25}
+.home-top div.who{flex:1;line-height:1.25}
 .home-top small{color:var(--muted)}
-.chips{display:flex;align-items:center;gap:6px;background:var(--room);border:1px solid var(--line);border-radius:999px;padding:5px 12px 5px 6px;font-weight:800;font-variant-numeric:tabular-nums}
-.chip-coin{width:20px;height:20px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe29a,var(--gold) 55%,#b7841d);box-shadow:inset 0 0 0 2px #d79a22}
 .quick{border-radius:22px;padding:18px;background:radial-gradient(130% 120% at 80% 0%,var(--felt-hi),var(--felt));box-shadow:inset 0 0 0 5px var(--wood),0 10px 24px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden}
 .quick h3{font-size:28px}
 .quick p{margin:0;color:#d5e8de;font-size:14px}
 .quick .deco{position:absolute;right:-12px;top:-10px;display:flex;gap:4px;transform:rotate(12deg);opacity:.9}
 .quick .deco .ball{--s:40px}
+.price{display:inline-flex;align-items:center;gap:5px;font-weight:800;color:var(--gold)}
+.price .coin{width:15px;height:15px}
 .tile{background:var(--room);border:1px solid var(--line);border-radius:16px;padding:14px 16px;text-align:left;display:flex;flex-direction:column;gap:2px}
 .tile b{font-size:16px}
 .tile small{color:var(--muted);font-size:13px}
@@ -112,7 +115,7 @@ label.f input:focus{border-color:var(--gold);outline:none}
 .tiles .ico{font-family:var(--display);font-size:22px;color:var(--gold);line-height:1}
 .resume{background:var(--gold);color:var(--ink);border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:10px;font-weight:600;font-size:14px}
 .resume button{margin-left:auto;background:var(--ink);color:var(--gold);border:0;border-radius:10px;padding:8px 12px;font-weight:800}
-.daily{border:1.5px dashed color-mix(in srgb,var(--gold) 55%,transparent);border-radius:16px;padding:12px 14px;font-size:14px;display:flex;gap:10px;align-items:center}
+.daily{border:1.5px dashed color-mix(in srgb,var(--gold) 55%,transparent);border-radius:16px;padding:12px 14px;font-size:14px}
 .daily .tag{font-family:var(--display);color:var(--gold);font-size:13px;letter-spacing:.06em;text-transform:uppercase}
 
 /* ---------- custom ---------- */
@@ -126,19 +129,20 @@ label.f input:focus{border-color:var(--gold);outline:none}
 .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--room-3);border-radius:12px;padding:4px;flex-direction:row!important}
 .seg button{border:0;background:transparent;border-radius:9px;padding:8px 4px;font-weight:600;font-size:13.5px;color:var(--muted)}
 .seg button.on{background:var(--paper);color:var(--ink);font-weight:800}
-.summary{text-align:center;color:var(--muted);font-size:13.5px;margin:0}
-.summary b{color:var(--text)}
+.bill{background:var(--room);border:1px dashed var(--line);border-radius:14px;padding:4px 14px;font-size:13.5px}
+.bill div{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--line);gap:8px}
+.bill div:last-child{border:0}
+.bill b{font-variant-numeric:tabular-nums}
 
 /* ---------- cards ---------- */
 .card{--tint:#fde2c8;background:var(--tint);border-radius:12px;padding:7px 7px 8px;color:var(--ink);box-shadow:0 2px 0 rgba(0,0,0,.25);position:relative}
 .card-head{display:flex;justify-content:space-between;align-items:baseline;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:0 3px 5px;color:color-mix(in srgb,var(--ink) 70%,transparent)}
 .card-head b{font-family:var(--display);font-weight:400;font-size:13px;letter-spacing:.02em;color:var(--red-dk);text-transform:none}
-.grid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:2px}
-.cell{aspect-ratio:1/1.08;background:rgba(255,255,255,.82);border-radius:5px;display:grid;place-items:center;font-weight:800;font-size:15px;font-variant-numeric:tabular-nums;position:relative;border:0;padding:0;color:var(--ink);line-height:1;-webkit-tap-highlight-color:transparent}
+.grid{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:2px}
+.cell{aspect-ratio:1/1.1;background:rgba(255,255,255,.82);border-radius:5px;display:grid;place-items:center;font-weight:800;font-size:16px;font-variant-numeric:tabular-nums;position:relative;border:0;padding:0;color:var(--ink);line-height:1;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
 .cell.empty{background:repeating-linear-gradient(45deg,rgba(0,0,0,.05) 0 3px,transparent 3px 6px)}
-.big .cell{font-size:18px}
+.big .cell{font-size:19px}
 .cell.marked::after{content:"";position:absolute;inset:2px;border-radius:50%;background:color-mix(in srgb,var(--red) 72%,transparent);mix-blend-mode:multiply;animation:daub .22s ease-out}
-.cell.marked{color:var(--ink)}
 @keyframes daub{from{transform:scale(.3);opacity:.3}}
 .cell.shake{animation:shake .35s;background:#ffd6cf}
 @keyframes shake{25%{transform:translateX(-3px)}50%{transform:translateX(3px)}75%{transform:translateX(-2px)}}
@@ -148,40 +152,72 @@ label.f input:focus{border-color:var(--gold);outline:none}
 .card.lined{box-shadow:0 0 0 3px var(--gold),0 2px 0 rgba(0,0,0,.25)}
 
 /* ---------- pick ---------- */
-.pick-head{padding:4px 16px 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.pick-head{padding:0 16px 8px}
 .pick-head p{margin:0;font-size:13.5px;color:var(--muted)}
 .count{font-family:var(--display);font-size:20px;background:var(--room);border:1px solid var(--line);border-radius:12px;padding:2px 12px;font-variant-numeric:tabular-nums}
+.count.full{background:var(--gold);color:var(--ink);border-color:var(--gold)}
 .pick-list{flex:1;overflow-y:auto;padding:4px 14px 12px;display:flex;flex-direction:column;gap:10px}
-.pick{border-radius:14px;padding:3px;border:2px solid transparent;position:relative;cursor:pointer;transition:transform .1s}
+.pick{border-radius:14px;padding:3px;border:2px solid transparent;position:relative;cursor:pointer}
 .pick.on{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 18%,transparent)}
 .pick .tick{position:absolute;right:-4px;top:-6px;width:28px;height:28px;border-radius:50%;background:var(--gold);color:var(--ink);font-weight:800;display:none;place-items:center;z-index:2;box-shadow:0 2px 6px rgba(0,0,0,.4)}
 .pick.on .tick{display:grid}
-.foot{display:grid;grid-template-columns:auto auto 1fr;gap:8px;padding:10px 14px 14px;border-top:1px solid var(--line);background:var(--room-2)}
+.foot{display:flex;flex-direction:column;gap:8px;padding:10px 14px 14px;border-top:1px solid var(--line);background:var(--room-2)}
+.foot .row2{display:grid;grid-template-columns:auto auto 1fr;gap:8px}
+.foot .pay{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
+.foot .pay b{color:var(--text);font-variant-numeric:tabular-nums}
 
 /* ---------- game ---------- */
 .s-game{background:radial-gradient(140% 60% at 50% 18%,#3a2a1d,var(--room-2) 70%);overflow:hidden}
-.g-top{display:flex;align-items:center;gap:8px;padding:4px 12px 2px;flex:none}
-.pausebtn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--room);display:grid;place-items:center}
+.g-top{display:flex;align-items:center;gap:8px;padding:2px 12px 0;flex:none}
+.pausebtn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--room);display:grid;place-items:center;flex:none}
 .pausebtn i{display:flex;gap:4px}
 .pausebtn i::before,.pausebtn i::after{content:"";width:4px;height:14px;border-radius:2px;background:var(--text)}
-.counter{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);line-height:1.2}
+.counter{font-variant-numeric:tabular-nums;font-size:12.5px;color:var(--muted);line-height:1.2;flex:1}
 .counter b{display:block;color:var(--text);font-size:16px}
-.phase{margin-left:auto;font-family:var(--display);font-size:14px;letter-spacing:.04em;padding:5px 10px;border-radius:999px;background:var(--gold);color:var(--ink)}
+.phase{font-family:var(--display);font-size:13.5px;letter-spacing:.03em;padding:5px 10px;border-radius:999px;background:var(--gold);color:var(--ink);white-space:nowrap;display:flex;align-items:center;gap:5px}
+.phase .coin{width:14px;height:14px}
 .phase.bingo{background:var(--red);color:#fff}
-.table-wrap{position:relative;height:236px;margin:0 6px;flex:none}
-.felt{position:absolute;inset:30px 14px 22px;border-radius:50%;background:radial-gradient(70% 70% at 50% 45%,var(--felt-hi),var(--felt) 70%);box-shadow:inset 0 0 0 7px var(--wood),inset 0 0 0 9px #8a5a33,inset 0 0 40px rgba(0,0,0,.45),0 12px 24px rgba(0,0,0,.45)}
-.dealer{position:absolute;left:50%;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;z-index:2}
-.dealer .av{width:40px;height:40px;border-radius:50%;background:#2c2c34;display:grid;place-items:center;font-family:var(--display);color:var(--gold);font-size:13px;position:relative;box-shadow:0 0 0 2px var(--gold)}
-.dealer .av::after{content:"";position:absolute;bottom:-6px;width:20px;height:9px;background:conic-gradient(from 90deg at 50% 50%,var(--red) 0 25%,transparent 0 50%,var(--red) 0 75%,transparent 0);border-radius:2px}
-.dealer span{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:6px;background:var(--room);padding:0 6px;border-radius:6px}
-.center{position:absolute;left:50%;top:57%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:4px;width:150px;text-align:center;z-index:1}
-.bombo{width:86px;height:86px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,rgba(255,255,255,.08) 0 60%,transparent 61%);
-  box-shadow:0 0 0 2px rgba(243,183,59,.45),inset 0 0 0 2px rgba(243,183,59,.25)}
-.bombo .ball{--s:66px}
-.bombo .ball.drop{animation:drop .5s cubic-bezier(.2,1.4,.4,1)}
-@keyframes drop{from{transform:translateY(-34px) scale(.5) rotate(-90deg);opacity:0}}
+.g-top .chips{padding:4px 10px 4px 5px;font-size:14px}
+.table-wrap{position:relative;height:300px;margin:0 6px;flex:none}
+.felt{position:absolute;inset:80px 10px 26px;border-radius:50%;z-index:1;background:radial-gradient(70% 70% at 50% 45%,var(--felt-hi),var(--felt) 70%);box-shadow:inset 0 0 0 7px var(--wood),inset 0 0 0 9px #8a5a33,inset 0 0 40px rgba(0,0,0,.45),0 12px 24px rgba(0,0,0,.45)}
+/* dealer */
+.dealer{position:absolute;left:calc(50% - 100px);top:2px;width:100px;z-index:0}
+.dealer svg{width:100px;height:114px;display:block}
+.dealer .eyes,.dealer .mouth,.dealer .head{transform-box:fill-box;transform-origin:center}
+.dealer .eyes{animation:blink 4.5s infinite}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+.dealer.talking .mouth{animation:talk .16s infinite alternate}
+@keyframes talk{to{transform:scaleY(2.6)}}
+.dealer .arm{transform-box:view-box;transform-origin:62px 72px;transition:transform .2s}
+.dealer.drawing .arm{animation:crank .32s linear infinite}
+@keyframes crank{0%{transform:rotate(0)}50%{transform:rotate(-24deg)}100%{transform:rotate(0)}}
+.dealer.checking .head{animation:nod .5s ease-in-out infinite alternate}
+@keyframes nod{to{transform:rotate(8deg) translateY(1px)}}
+.dealer.happy .head{animation:hop .35s ease-in-out 4 alternate}
+@keyframes hop{to{transform:translateY(-4px) rotate(-5deg)}}
+.dealer.sad .head{animation:no .45s ease-in-out 4 alternate}
+@keyframes no{from{transform:rotate(-7deg)}to{transform:rotate(7deg)}}
+/* bombo */
+.bombo{position:absolute;left:calc(50% + 4px);top:6px;width:106px;height:110px;z-index:3}
+.bombo svg{width:106px;height:110px;display:block;overflow:visible}
+.bombo .cage,.bombo .crank{transform-box:view-box;transform-origin:46px 42px;animation:spin 7s linear infinite}
+.bombo .tumble circle{transform-box:fill-box;transform-origin:center;animation:tumble 1.4s ease-in-out infinite alternate}
+.bombo .tumble circle:nth-child(2){animation-delay:-.3s}.bombo .tumble circle:nth-child(3){animation-delay:-.7s}
+.bombo .tumble circle:nth-child(4){animation-delay:-1s}.bombo .tumble circle:nth-child(5){animation-delay:-.5s}.bombo .tumble circle:nth-child(6){animation-delay:-1.2s}
+.bombo.fast .cage,.bombo.fast .crank{animation-duration:.55s}
+.bombo.fast .tumble circle{animation-duration:.28s}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes tumble{from{transform:translate(-3px,3px)}to{transform:translate(4px,-9px)}}
+.bombo .out{opacity:0}
+.bombo.pop .out{animation:out .55s ease-in forwards}
+@keyframes out{0%{opacity:1;transform:translate(0,0)}100%{opacity:1;transform:translate(-50px,92px) scale(1.4)}}
+.center{position:absolute;left:50%;top:64%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:4px;width:160px;text-align:center;z-index:2}
+.plate{width:86px;height:86px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,rgba(0,0,0,.18) 0 62%,transparent 63%);box-shadow:0 0 0 2px rgba(243,183,59,.35)}
+.plate .ball{--s:68px}
+.plate .ball.drop{animation:drop .5s cubic-bezier(.2,1.4,.4,1)}
+@keyframes drop{from{transform:translate(28px,-50px) scale(.4) rotate(-120deg);opacity:0}}
 .calltext{font-size:12.5px;font-weight:800;color:#e9f4ee;min-height:1.3em;line-height:1.25;text-shadow:0 1px 2px rgba(0,0,0,.5)}
-.seat{position:absolute;transform:translate(-50%,-50%);width:78px;display:flex;flex-direction:column;align-items:center;gap:1px;z-index:2;text-align:center}
+.seat{position:absolute;transform:translate(-50%,-50%);width:78px;display:flex;flex-direction:column;align-items:center;gap:1px;z-index:4;text-align:center}
 .seat .av{--c:#888;width:36px;height:36px;border-radius:50%;background:var(--c);display:grid;place-items:center;font-family:var(--display);font-size:14px;color:#fff;box-shadow:0 0 0 2px var(--room-2)}
 .seat .nm{font-size:11px;font-weight:800;line-height:1.1;text-shadow:0 1px 2px #000;white-space:nowrap}
 .seat .pill{font-size:10px;font-weight:800;padding:1px 6px;border-radius:999px;background:rgba(0,0,0,.55);color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
@@ -190,17 +226,24 @@ label.f input:focus{border-color:var(--gold);outline:none}
 .seat .bub{position:absolute;top:-16px;background:var(--paper);color:var(--ink);font-size:10px;font-weight:800;padding:1px 6px;border-radius:8px;white-space:nowrap;animation:pop .25s}
 @keyframes pop{from{transform:scale(.4);opacity:0}}
 .seat.me .av{box-shadow:0 0 0 2px var(--gold)}
-.banner{position:absolute;inset:40px 30px 30px;display:grid;place-items:center;z-index:4;pointer-events:none}
+.banner{position:absolute;inset:80px 30px 30px;display:grid;place-items:center;z-index:6;pointer-events:none}
 .banner div{background:var(--paper);color:var(--ink);border-radius:18px;padding:10px 18px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.5);animation:pop .3s}
 .banner h3{font-size:34px;color:var(--red);line-height:1}
 .banner p{margin:2px 0 0;font-size:13px;font-weight:600}
-.last{display:flex;align-items:center;gap:6px;padding:2px 12px 6px;flex:none}
+.last{display:flex;align-items:center;gap:6px;padding:0 12px 6px;flex:none}
 .last .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-right:2px}
 .last .ball{--s:28px}
-.last .ball:first-of-type{--s:32px}
 .boardbtn{margin-left:auto;font-size:12.5px;font-weight:800;border:1px solid var(--line);background:var(--room);border-radius:10px;padding:6px 10px}
-.my-cards{flex:1;min-height:0;overflow-y:auto;padding:4px 12px 10px;display:flex;flex-direction:column;gap:10px}
-.my-cards.blur{filter:blur(8px)}
+/* carousel */
+.cards-zone{flex:1;min-height:0;display:flex;flex-direction:column;gap:4px;padding-bottom:6px}
+.carousel{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y proximity;padding:4px 12px 8px;scroll-padding:4px;overscroll-behavior-y:contain}
+.carousel::-webkit-scrollbar{display:none}
+.carousel.blur{filter:blur(9px)}
+.slide{flex:none;scroll-snap-align:start;min-width:0}
+.dots{display:flex;justify-content:center;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.dots button{width:9px;height:9px;border-radius:999px;border:0;padding:0;background:var(--room-3);transition:width .2s,background .2s}
+.dots button.on{width:22px;background:var(--gold)}
+.dots .lbl{margin-left:6px;font-variant-numeric:tabular-nums}
 .g-actions{flex:none;display:grid;grid-template-columns:1fr 1fr auto;gap:8px;padding:10px 12px 12px;background:var(--room);border-top:1px solid var(--line)}
 .claim{font-family:var(--display);font-size:24px;letter-spacing:.03em;border:0;border-radius:14px;padding:10px 6px}
 .claim.l{background:var(--gold);color:var(--ink);box-shadow:0 4px 0 #b7841d}
@@ -210,7 +253,7 @@ label.f input:focus{border-color:var(--gold);outline:none}
 .helpbtn b{display:block;font-family:var(--display);font-weight:400;font-size:18px;color:var(--gold)}
 
 /* overlays */
-.overlay{position:absolute;inset:0;z-index:10;background:rgba(15,11,8,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;flex-direction:column;justify-content:center;padding:24px;gap:12px}
+.overlay{position:absolute;inset:0;z-index:10;background:rgba(15,11,8,.78);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;flex-direction:column;justify-content:center;padding:24px;gap:12px}
 .overlay h2{font-size:38px;text-align:center}
 .overlay p{text-align:center;color:var(--muted);margin:0}
 .sheet{position:absolute;left:0;right:0;bottom:0;z-index:11;background:var(--room-2);border-radius:22px 22px 0 0;padding:14px 14px 18px;box-shadow:0 -10px 30px rgba(0,0,0,.5);animation:up .25s}
@@ -221,13 +264,44 @@ label.f input:focus{border-color:var(--gold);outline:none}
 .board span{aspect-ratio:1;display:grid;place-items:center;border-radius:50%;font-size:11.5px;font-weight:800;color:var(--muted);background:var(--room);font-variant-numeric:tabular-nums}
 .board span.on{background:var(--paper);color:var(--ink)}
 .board span.lastn{background:var(--red);color:#fff}
-.result{justify-content:flex-start;padding-top:40px;overflow-y:auto}
-.result .ball{--s:70px;margin:0 auto}
-.rlist{background:var(--room);border:1px solid var(--line);border-radius:16px;padding:6px 14px}
-.rlist div{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.result{justify-content:flex-start;padding-top:22px;overflow-y:auto;gap:10px}
+.result > *{animation:rise .45s both}
+.result > *:nth-child(2){animation-delay:.1s}.result > *:nth-child(3){animation-delay:.2s}.result > *:nth-child(4){animation-delay:.3s}.result > *:nth-child(5){animation-delay:.4s}.result > *:nth-child(n+6){animation-delay:.5s}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}}
+.result .mini{display:flex;justify-content:center;align-items:flex-end;gap:6px;height:96px}
+.result .mini svg{width:80px;height:92px}
+.result.lose{background:rgba(22,20,19,.86)}
+.result.lose .mini .ball{animation:roll 1.4s ease-out both}
+@keyframes roll{0%{transform:translateX(-120px) rotate(-360deg)}70%{transform:translateX(6px) rotate(10deg)}100%{transform:none}}
+.stamp{font-family:var(--display);font-size:48px;line-height:1;text-align:center;color:var(--red);background:var(--paper);border:4px solid var(--red);border-radius:14px;padding:6px 16px;align-self:center;transform:rotate(-7deg);animation:slam .55s cubic-bezier(.2,1.6,.4,1) both!important}
+@keyframes slam{from{transform:scale(3) rotate(-20deg);opacity:0}}
+.stamp.gold{color:var(--ink);background:var(--gold);border-color:#b7841d}
+.rlist{background:var(--room);border:1px solid var(--line);border-radius:16px;padding:4px 14px}
+.rlist div{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);font-size:14px}
 .rlist div:last-child{border:0}
 .rlist b{font-variant-numeric:tabular-nums;text-align:right}
-.toast{position:absolute;left:50%;bottom:92px;transform:translateX(-50%);z-index:20;background:var(--paper);color:var(--ink);font-weight:800;font-size:13.5px;padding:9px 14px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.45);width:max-content;max-width:86%;text-align:center;animation:pop .2s}
+.rlist .tot{font-size:16px}
+.pos{color:var(--ok)} .neg{color:var(--bad)}
+.toast{position:absolute;left:50%;bottom:92px;transform:translateX(-50%);z-index:40;background:var(--paper);color:var(--ink);font-weight:800;font-size:13.5px;padding:9px 14px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.45);width:max-content;max-width:86%;text-align:center;animation:pop .2s}
+
+/* bankruptcy */
+.bank{z-index:35;align-items:center;text-align:center;background:rgba(12,9,7,.9)}
+.bigcoin{width:150px;height:150px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-size:46px;color:#7a4f0c;font-variant-numeric:tabular-nums;
+  background:radial-gradient(circle at 35% 30%,#fff0bf,var(--gold) 50%,#b7841d 100%);box-shadow:inset 0 0 0 8px #d79a22,inset 0 0 0 11px #f7d27a,0 14px 30px rgba(0,0,0,.5)}
+.bigcoin.empty{filter:grayscale(.9) brightness(.7);animation:wobble .5s 3}
+@keyframes wobble{25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
+.bigcoin.full{animation:flip .9s ease-out}
+@keyframes flip{0%{transform:rotateY(0)}100%{transform:rotateY(720deg)}}
+.bank .stamp{margin-top:-30px;position:relative;z-index:2}
+/* fx */
+#fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:38}
+.coinfx{position:absolute;width:22px;height:22px;border-radius:50%;pointer-events:none;z-index:37;background:radial-gradient(circle at 35% 30%,#fff0bf,var(--gold) 55%,#b7841d);box-shadow:inset 0 0 0 2px #d79a22}
+.coinfx.rain{top:-30px;animation:rain 1.7s ease-in forwards}
+@keyframes rain{to{transform:translate(var(--dx),860px) rotate(600deg)}}
+.coinfx.spill{animation:spill 1.3s cubic-bezier(.3,0,.8,1) forwards}
+@keyframes spill{0%{transform:translate(0,0) scale(.6)}30%{transform:translate(calc(var(--dx)*.4),-70px) scale(1)}100%{transform:translate(var(--dx),520px) rotate(420deg);opacity:0}}
+.coinfx.gather{animation:gather 1s cubic-bezier(.5,0,.7,1) forwards}
+@keyframes gather{0%{transform:translate(0,0) scale(.4);opacity:0}20%{opacity:1;transform:translate(calc(var(--dx)*-.2),-30px) scale(1)}100%{transform:translate(var(--tx),var(--ty)) scale(.5);opacity:.6}}
 
 /* settings & howto */
 .list{background:var(--room);border:1px solid var(--line);border-radius:16px;overflow:hidden}
@@ -255,15 +329,19 @@ label.f input:focus{border-color:var(--gold);outline:none}
 .docs p{margin:0 0 10px;max-width:64ch}
 .docs ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
 .docs li{max-width:62ch}
-.docs li b{color:var(--text)}
-.muted{color:var(--muted)}
+.changes{background:var(--room-2);border:1px solid var(--line);border-radius:16px;padding:14px 18px}
+.changes h2{font-size:19px;color:var(--gold);margin-bottom:8px}
+.changes ul{font-size:14.5px}
 .rules{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
-.colnums{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:2px;padding:0 7px;font-size:9.5px;color:var(--muted);text-align:center;font-variant-numeric:tabular-nums;margin-bottom:4px}
-.samplewrap{max-width:420px}
+.colnums{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:2px;padding:0 7px;font-size:10px;color:var(--muted);text-align:center;font-variant-numeric:tabular-nums;margin-bottom:4px}
+.samplewrap{max-width:400px}
 .feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px}
 .feat > div{border-top:3px solid var(--c);padding-top:10px}
 .feat h3{font-size:17px;margin-bottom:6px;color:var(--c)}
 .feat ul{padding-left:18px;font-size:14px;gap:5px}
+.money{width:100%;border-collapse:collapse;font-size:14.5px}
+.money td{padding:8px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.money td:last-child{text-align:right;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap;padding-left:12px}
 .qs{display:flex;flex-direction:column;gap:10px;counter-reset:q}
 .q{background:var(--room-2);border:1px solid var(--line);border-radius:14px;padding:12px 14px 12px 50px;position:relative;counter-increment:q}
 .q::before{content:counter(q);position:absolute;left:14px;top:11px;width:24px;height:24px;border-radius:50%;background:var(--gold);color:var(--ink);font-weight:800;display:grid;place-items:center;font-size:13px}
@@ -279,6 +357,29 @@ label.f input:focus{border-color:var(--gold);outline:none}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="dealerArt" viewBox="0 0 84 96">
+      <path d="M10 96 C10 70 24 62 42 62 C60 62 74 70 74 96Z" fill="#2c2c34"/>
+      <path d="M34 63 L42 96 L50 63Z" fill="#fbf5e6"/>
+      <path d="M30 64 L38 68 L30 72Z M54 64 L46 68 L54 72Z" fill="#e0442e"/>
+      <circle cx="42" cy="68" r="2.6" fill="#b8321f"/>
+      <g class="arm"><path d="M62 74 Q76 76 80 62" stroke="#2c2c34" stroke-width="9" stroke-linecap="round" fill="none"/><circle cx="80" cy="60" r="5" fill="#f1c7a0"/></g>
+      <rect x="37" y="50" width="10" height="13" rx="3" fill="#e2ad83"/>
+      <g class="head">
+        <circle cx="42" cy="36" r="17" fill="#f1c7a0"/>
+        <path d="M25 34 C24 20 33 15 42 15 C52 15 60 20 59 34 C56 26 49 23 42 23 C34 23 28 26 25 34Z" fill="#3a2a1d"/>
+        <rect x="27" y="11" width="30" height="7" rx="2" fill="#e0442e"/>
+        <rect x="23" y="16" width="38" height="4" rx="2" fill="#b8321f"/>
+        <g class="eyes"><circle cx="36" cy="37" r="2.1" fill="#231c17"/><circle cx="48" cy="37" r="2.1" fill="#231c17"/></g>
+        <ellipse cx="31" cy="43" rx="3" ry="1.8" fill="#e89a86" opacity=".7"/><ellipse cx="53" cy="43" rx="3" ry="1.8" fill="#e89a86" opacity=".7"/>
+        <path d="M35 44 Q42 41 49 44 Q42 47 35 44Z" fill="#3a2a1d"/>
+        <ellipse class="mouth" cx="42" cy="48.5" rx="3.4" ry="1.3" fill="#8a2c1f"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
 <div class="stage">
   <div class="proto">
     <nav class="jump" id="jump" aria-label="Ir a pantalla">
@@ -289,10 +390,13 @@ label.f input:focus{border-color:var(--gold);outline:none}
       <button data-jump="custom">Personalizada</button>
       <button data-jump="pick">Cartones</button>
       <button data-jump="game">Mesa</button>
+      <button data-jump="win">Victoria</button>
+      <button data-jump="lose">Derrota</button>
+      <button data-jump="bank">Bancarrota</button>
     </nav>
 
     <div class="phone" id="phone">
-      <div class="screenbox">
+      <div class="screenbox" id="screenbox">
         <div class="notch"><span>21:30</span><span>5G</span></div>
         <div class="screens" id="screens">
 
@@ -304,7 +408,7 @@ label.f input:focus{border-color:var(--gold);outline:none}
                   <div class="ball" style="--bc:#e0442e"><b>M</b></div>
                   <div class="ball" style="--bc:#f3b73b"><b>i</b></div>
                   <div class="ball" style="--bc:#1aa3c2"><b>B</b></div>
-                  <div class="ball" style="--bc:#7cb342"><b>!</b></div>
+                  <div class="ball" style="--bc:#6fa83a"><b>!</b></div>
                 </div>
                 <h1>MiBingo</h1>
                 <p>El bingo de toda la vida, en el bolsillo.<br>Atento a las bolas: aquí nadie marca por ti.</p>
@@ -330,6 +434,7 @@ label.f input:focus{border-color:var(--gold);outline:none}
               <label class="f">Nombre en la mesa<input id="pName" maxlength="14" placeholder="Tu nombre" autocomplete="nickname"></label>
               <label class="f">Fecha de nacimiento<input id="pBirth" type="date" max="2026-11-24"></label>
               <p class="small" id="ageOut">Usamos la fecha para calcular tu edad; nadie más la ve.</p>
+              <div class="gift"><span class="coin" style="width:26px;height:26px"></span><span>Al crear la cuenta te regalamos <b>500 fichas</b> para empezar.</span></div>
               <p class="err" id="pErr" hidden></p>
               <button class="btn primary" id="pSave" type="button">Confirmar y entrar</button>
             </div>
@@ -339,18 +444,18 @@ label.f input:focus{border-color:var(--gold);outline:none}
           <section class="screen" data-screen="home" hidden>
             <div class="home-top">
               <div class="avatar" id="hAvatar">L</div>
-              <div><small>Hola,</small><br><b id="hName" style="font-size:18px">Lucía</b></div>
-              <div class="chips" style="flex:none"><span class="chip-coin" aria-hidden="true"></span><span id="hCoins">500</span></div>
+              <div class="who"><small>Hola,</small><br><b id="hName" style="font-size:18px">Lucía</b></div>
+              <div class="chips" id="hChips"><span class="coin" aria-hidden="true"></span><span id="hCoins">500</span></div>
             </div>
             <div class="pad">
               <div class="resume" id="resume" hidden><span id="resumeTxt">Partida en pausa</span><button id="resumeBtn" type="button">Continuar</button></div>
               <article class="quick">
                 <div class="deco" aria-hidden="true">
                   <div class="ball" style="--bc:#7b55d6"><b>22</b></div>
-                  <div class="ball" style="--bc:#e0442e"><b>90</b></div>
+                  <div class="ball" style="--bc:#8a6a4a"><b>90</b></div>
                 </div>
                 <h3>Partida rápida</h3>
-                <p>4 jugadores · 2 cartones cada uno<br>Se juega línea y bingo</p>
+                <p>4 jugadores · 3 cartones cada uno<br>Se juega línea y bingo · <span class="price"><span class="coin"></span>60 fichas</span></p>
                 <button class="btn gold" id="goQuick" type="button" style="margin-top:6px">Jugar ahora</button>
               </article>
               <button class="tile" id="goCustom" type="button"><b>Partida personalizada</b><small>Hasta 6 jugadores y 5 cartones cada uno, velocidad y nivel de los rivales</small></button>
@@ -359,7 +464,7 @@ label.f input:focus{border-color:var(--gold);outline:none}
                 <button class="tile" data-go="stats" type="button"><span class="ico">%</span>Mis números</button>
                 <button class="tile" id="goSettings" type="button"><span class="ico">⚙</span>Ajustes</button>
               </div>
-              <div class="daily"><div><span class="tag">Reto del día</span><br>Canta línea antes de la bola 25 y gana <b>+100 fichas</b>.</div></div>
+              <div class="daily"><span class="tag">Reto del día</span><br>Canta línea antes de la bola 25 y gana <b>+100 fichas</b>.</div>
               <button class="btn ghost" id="logout" type="button" style="font-size:13px;padding:9px">Cerrar sesión</button>
             </div>
           </section>
@@ -368,28 +473,31 @@ label.f input:focus{border-color:var(--gold);outline:none}
           <section class="screen" data-screen="custom" hidden>
             <div class="topbar"><button class="back" data-go="home" aria-label="Volver" type="button">‹</button><h2>Personalizada</h2></div>
             <div class="pad" style="padding-top:6px">
-              <div class="field"><div><b>Jugadores en la mesa</b><small>Tú y tus rivales, máximo 6</small></div>
+              <div class="field"><div><b>Jugadores en la mesa</b><small>Contándote a ti, máximo 6</small></div>
                 <div class="stepper" data-key="players" data-min="2" data-max="6"><button type="button" data-d="-1" aria-label="Menos">−</button><output>4</output><button type="button" data-d="1" aria-label="Más">+</button></div></div>
-              <div class="field"><div><b>Cartones por jugador</b><small>Tú eliges hasta este número</small></div>
-                <div class="stepper" data-key="cards" data-min="1" data-max="5"><button type="button" data-d="-1" aria-label="Menos">−</button><output>2</output><button type="button" data-d="1" aria-label="Más">+</button></div></div>
+              <div class="field"><div><b>Cartones por jugador</b><small>Cada cartón cuesta 20 fichas</small></div>
+                <div class="stepper" data-key="cards" data-min="1" data-max="5"><button type="button" data-d="-1" aria-label="Menos">−</button><output>3</output><button type="button" data-d="1" aria-label="Más">+</button></div></div>
               <div class="field col"><b>Velocidad del crupier</b>
                 <div class="seg" data-key="speed"><button type="button" data-v="lento">Tranquilo</button><button type="button" data-v="normal">Normal</button><button type="button" data-v="rapido">Rápido</button></div></div>
               <div class="field col"><b>Rivales</b>
                 <div class="seg" data-key="bots"><button type="button" data-v="despistados">Despistados</button><button type="button" data-v="normales">Normales</button><button type="button" data-v="expertos">Expertos</button></div></div>
-              <p class="summary" id="cSummary"></p>
+              <div class="bill" id="cBill"></div>
               <button class="btn primary" id="customGo" type="button">Elegir mis cartones</button>
             </div>
           </section>
 
           <!-- PICK -->
           <section class="screen" data-screen="pick" hidden style="overflow:hidden">
-            <div class="topbar"><button class="back" id="pickBack" aria-label="Volver" type="button">‹</button><h2 id="pickTitle">Elige tus cartones</h2><span class="count" id="pickCount">0/2</span></div>
-            <div class="pick-head"><p>Toca los que te den buena espina. Puedes pedir otros 10.</p></div>
+            <div class="topbar"><button class="back" id="pickBack" aria-label="Volver" type="button">‹</button><h2 id="pickTitle">Elige 3 cartones</h2><span class="count" id="pickCount">0/3</span></div>
+            <div class="pick-head"><p>Toca los que te den buena espina. ¿No te convencen? Pide otros 10.</p></div>
             <div class="pick-list" id="pickList"></div>
             <div class="foot">
-              <button class="btn ghost" id="pickNew" type="button" style="padding:12px">Otros 10</button>
-              <button class="btn ghost" id="pickRand" type="button" style="padding:12px">Al azar</button>
-              <button class="btn primary" id="pickGo" type="button" disabled>A la mesa</button>
+              <div class="pay"><span>Pagas <b id="payCost">60</b></span><span>Te quedan <b id="payLeft">440</b></span></div>
+              <div class="row2">
+                <button class="btn ghost" id="pickNew" type="button" style="padding:12px">Otros 10</button>
+                <button class="btn ghost" id="pickRand" type="button" style="padding:12px">Al azar</button>
+                <button class="btn primary" id="pickGo" type="button" disabled>A la mesa</button>
+              </div>
             </div>
           </section>
 
@@ -397,21 +505,44 @@ label.f input:focus{border-color:var(--gold);outline:none}
           <section class="screen s-game" data-screen="game" hidden>
             <div class="g-top">
               <button class="pausebtn" id="pauseBtn" aria-label="Pausar partida" type="button"><i></i></button>
-              <div class="counter"><b id="gCount">Bola 0</b>quedan <span id="gLeft">100</span></div>
-              <span class="phase" id="gPhase">Se juega LÍNEA</span>
+              <div class="counter"><b id="gCount">Bola 0</b>quedan <span id="gLeft">90</span></div>
+              <div class="chips" id="gChips"><span class="coin" aria-hidden="true"></span><span id="gCoins">500</span></div>
+              <span class="phase" id="gPhase">LÍNEA</span>
             </div>
             <div class="table-wrap" id="tableWrap">
+              <div class="dealer" id="dealer"><svg viewBox="0 0 84 96" aria-hidden="true"></svg></div>
               <div class="felt"></div>
-              <div class="dealer"><div class="av">CR</div><span id="dealerSt">Crupier</span></div>
+              <div class="bombo" id="bombo">
+                <svg viewBox="0 0 92 96" aria-hidden="true">
+                  <path d="M30 90 L40 62 M62 90 L52 62" stroke="#8a5a33" stroke-width="5" stroke-linecap="round"/>
+                  <rect x="20" y="86" width="52" height="7" rx="3" fill="#6b4426"/>
+                  <circle cx="46" cy="42" r="31" fill="rgba(255,255,255,.07)"/>
+                  <g class="tumble">
+                    <circle cx="34" cy="56" r="5" fill="#e0442e"/><circle cx="45" cy="60" r="5" fill="#f3b73b"/><circle cx="57" cy="55" r="5" fill="#1aa3c2"/>
+                    <circle cx="40" cy="49" r="5" fill="#6fa83a"/><circle cx="52" cy="47" r="5" fill="#7b55d6"/><circle cx="62" cy="62" r="4.5" fill="#c94ca0"/>
+                  </g>
+                  <g class="cage">
+                    <circle cx="46" cy="42" r="31" fill="none" stroke="#f3b73b" stroke-width="3"/>
+                    <path d="M15 42 H77 M46 11 V73 M24 20 L68 64 M68 20 L24 64" stroke="#f3b73b" stroke-width="1.3" opacity=".55"/>
+                    <ellipse cx="46" cy="42" rx="12" ry="31" fill="none" stroke="#f3b73b" stroke-width="1.6" opacity=".8"/>
+                  </g>
+                  <g class="crank"><path d="M46 42 L46 6" stroke="#b7841d" stroke-width="3" stroke-linecap="round"/><circle cx="46" cy="6" r="4" fill="#e0442e"/></g>
+                  <circle cx="46" cy="42" r="4.5" fill="#b7841d"/>
+                  <circle class="out" cx="46" cy="72" r="6" fill="#fffdf7"/>
+                </svg>
+              </div>
               <div class="center">
-                <div class="bombo" id="bombo"></div>
+                <div class="plate" id="plate"></div>
                 <div class="calltext" id="callText">¡Atentos, que empezamos!</div>
               </div>
               <div id="seats"></div>
               <div class="banner" id="banner" hidden><div><h3 id="banTitle">¡LÍNEA!</h3><p id="banSub"></p></div></div>
             </div>
             <div class="last"><span class="lbl">Últimas</span><span id="lastBalls" style="display:flex;gap:5px;align-items:center"></span><button class="boardbtn" id="boardBtn" type="button">Ver tablero</button></div>
-            <div class="my-cards" id="myCards"></div>
+            <div class="cards-zone">
+              <div class="carousel" id="myCards"></div>
+              <div class="dots" id="dots"></div>
+            </div>
             <div class="g-actions">
               <button class="claim l" id="claimL" type="button">¡LÍNEA!</button>
               <button class="claim b" id="claimB" type="button">¡BINGO!</button>
@@ -428,7 +559,7 @@ label.f input:focus{border-color:var(--gold);outline:none}
             </div>
             <div class="overlay" id="quitOv" hidden>
               <h2 style="font-size:30px">¿Abandonar?</h2>
-              <p>Perderás esta partida y los premios que llevas.</p>
+              <p>Perderás las fichas de los cartones y los premios que llevas.</p>
               <button class="btn primary" id="quitYes" type="button">Sí, abandonar</button>
               <button class="btn ghost" id="quitNo" type="button">Seguir jugando</button>
             </div>
@@ -448,7 +579,7 @@ label.f input:focus{border-color:var(--gold);outline:none}
               <div class="list">
                 <label class="row"><div>Voz del crupier<small>Canta cada número en voz alta</small></div><input type="checkbox" class="sw" id="set-voice"></label>
                 <label class="row"><div>Frases de bingo<small>“El 15, la niña bonita”</small></div><input type="checkbox" class="sw" id="set-phrases"></label>
-                <label class="row"><div>Sonidos<small>Bola, marcado y premios</small></div><input type="checkbox" class="sw" id="set-sound"></label>
+                <label class="row"><div>Sonidos<small>Bombo, marcado y premios</small></div><input type="checkbox" class="sw" id="set-sound"></label>
                 <label class="row"><div>Vibración<small>Al marcar y al cantar</small></div><input type="checkbox" class="sw" id="set-vibe"></label>
               </div>
               <p class="sec-t">Ayudas</p>
@@ -466,19 +597,21 @@ label.f input:focus{border-color:var(--gold);outline:none}
             <div class="topbar"><button class="back" data-go="home" aria-label="Volver" type="button">‹</button><h2>Cómo se juega</h2></div>
             <div class="pad howto" style="padding-top:6px">
               <ol>
-                <li>Elige tus cartones. Cada uno tiene <b>15 números</b> en 3 filas de 5.</li>
-                <li>El crupier saca bolas del <b>1 al 100</b>, sin repetir.</li>
+                <li>Compra tus cartones: <b>20 fichas</b> cada uno. Todo lo que se paga va al <b>bote</b>.</li>
+                <li>Cada cartón tiene <b>15 números</b> en 3 filas de 5. Si tienes varios, van uno debajo de otro: <b>desliza hacia arriba o abajo</b> para verlos.</li>
+                <li>El crupier saca bolas del <b>1 al 90</b>, sin repetir.</li>
                 <li><b>Toca el número</b> en tu cartón cuando salga. Nadie lo hace por ti.</li>
                 <li>¿Fila completa? Pulsa <b>¡LÍNEA!</b> antes que nadie. Solo hay una línea por partida.</li>
                 <li>¿Cartón completo? Pulsa <b>¡BINGO!</b> y se acaba la partida.</li>
                 <li>Si cantas sin tenerlo es <b>canto falso</b>: pierdes 10 fichas.</li>
-                <li>Si dos jugadores cantan con la misma bola, se reparten el premio.</li>
+                <li>Si te quedas sin fichas, la casa te devuelve a <b>500</b>.</li>
               </ol>
               <div class="list">
-                <div class="row"><div>Línea<small>Primera fila completa de la partida</small></div><b>+40</b></div>
-                <div class="row"><div>Bingo<small>Cartón completo</small></div><b>+150</b></div>
+                <div class="row"><div>Línea<small>30 % del bote</small></div><b>72</b></div>
+                <div class="row"><div>Bingo<small>70 % del bote</small></div><b>168</b></div>
                 <div class="row"><div>Canto falso</div><b>−10</b></div>
               </div>
+              <p class="small">Ejemplo con la partida rápida: 4 jugadores × 3 cartones × 20 fichas = bote de 240.</p>
             </div>
           </section>
 
@@ -492,6 +625,15 @@ label.f input:focus{border-color:var(--gold);outline:none}
           </section>
 
         </div>
+
+        <div class="overlay bank" id="bankOv" hidden>
+          <div class="bigcoin" id="bankCoin">0</div>
+          <div class="stamp" id="bankStamp">BANCARROTA</div>
+          <h2 id="bankTitle" style="font-size:28px">Te has quedado sin fichas</h2>
+          <p id="bankText">No pasa nada: la casa invita.</p>
+          <button class="btn gold" id="bankBtn" type="button">Recibir 500 fichas</button>
+        </div>
+        <canvas id="fx"></canvas>
         <div class="toast" id="toast" hidden></div>
       </div>
     </div>
@@ -500,39 +642,51 @@ label.f input:focus{border-color:var(--gold);outline:none}
   <!-- ================= DOCS ================= -->
   <main class="docs">
     <header>
-      <h1>MiBingo, <em>primer boceto</em></h1>
-      <p class="lede">Un bingo contra rivales de la casa, con crupier que canta las bolas y cartones que se marcan a mano. El teléfono de la izquierda funciona de verdad: crea una cuenta de mentira, elige cartones y juega una partida entera.</p>
+      <h1>MiBingo, <em>boceto 2</em></h1>
+      <p class="lede">Un bingo contra rivales de la casa, con un crupier que gira el bombo y canta las bolas, y cartones que se marcan a mano. El teléfono de la izquierda funciona de verdad: juega una partida entera o salta directamente a la victoria, la derrota o la bancarrota.</p>
     </header>
 
+    <div class="changes">
+      <h2>Cambios de esta versión</h2>
+      <ul>
+        <li>Bolas del <b>1 al 90</b> y cartones clásicos de <b>3×9</b>.</li>
+        <li>Eliges <b>exactamente N cartones</b>; la partida rápida es de 4 jugadores con <b>3 cartones</b>.</li>
+        <li><b>Fichas</b>: 500 al crear la cuenta, los cartones cuestan y los premios salen del bote. Si te arruinas, vuelves a 500.</li>
+        <li>Animaciones de <b>victoria, derrota y bancarrota</b>, y de cobro de premio en la mesa.</li>
+        <li><b>Crupier animado</b> con bombo girando a su lado: gira la manivela, la bola sale rodando y la canta.</li>
+        <li>Los cartones van <b>uno debajo de otro</b>: si no caben, deslizas hacia arriba o abajo, con un indicador de en cuál estás.</li>
+      </ul>
+    </div>
+
     <section>
-      <h2>Cómo he entendido el bingo loto</h2>
-      <p>El bingo español clásico usa 90 bolas y cartones de 3×9. Como quieres bolas del 1 al 100, lo he adaptado a <b>10 columnas</b>. Si tu bingo loto funciona distinto, dímelo y lo cambio.</p>
+      <h2>Reglas del cartón</h2>
       <div class="rules">
         <div class="samplewrap">
-          <div class="colnums"><span>1-10</span><span>11-20</span><span>21-30</span><span>31-40</span><span>41-50</span><span>51-60</span><span>61-70</span><span>71-80</span><span>81-90</span><span>91-100</span></div>
+          <div class="colnums"><span>1-9</span><span>10-19</span><span>20-29</span><span>30-39</span><span>40-49</span><span>50-59</span><span>60-69</span><span>70-79</span><span>80-90</span></div>
           <div id="docCard"></div>
         </div>
         <ul>
-          <li>Cartón de <b>3 filas × 10 columnas</b> con <b>15 números</b>: 5 por fila, el resto huecos.</li>
-          <li>Cada columna es una decena (1–10, 11–20… 91–100) y lleva 1 o 2 números, ordenados de arriba abajo.</li>
-          <li>Los números de cada cartón y el orden de las bolas son aleatorios, y ninguna bola se repite en la partida.</li>
-          <li>Premios: <b>Línea</b> (la primera fila completa de la partida) y <b>Bingo</b> (cartón completo, termina la partida).</li>
+          <li><b>3 filas × 9 columnas</b> con <b>15 números</b>: 5 por fila y el resto huecos.</li>
+          <li>Columnas por decenas: 1–9, 10–19… y la última 80–90. Cada columna tiene de 1 a 3 números, ordenados de arriba abajo.</li>
+          <li>Los números de los cartones y el orden de las bolas son aleatorios, y ninguna bola se repite en la partida.</li>
+          <li>Premios: <b>Línea</b> (primera fila completa de la partida) y <b>Bingo</b> (cartón completo, termina la partida).</li>
           <li>Hay que <b>marcar a mano</b> y <b>cantar</b> pulsando el botón. Si no cantas, el premio se lo lleva otro.</li>
         </ul>
       </div>
     </section>
 
     <section>
-      <h2>Lo que puedes probar ya</h2>
-      <ul>
-        <li><b>Acceso</b> con Google o correo, y perfil la primera vez (nombre, fecha de nacimiento y color de avatar).</li>
-        <li><b>Partida rápida</b> (4 jugadores, 2 cartones) y <b>personalizada</b> (2–6 jugadores, 1–5 cartones, velocidad y nivel de rivales).</li>
-        <li><b>Elección de cartones</b>: se muestran 10, eliges hasta el máximo, puedes pedir otros 10 o que se elijan al azar.</li>
-        <li><b>La mesa</b>: crupier arriba, bombo en el centro, rivales alrededor con su avatar y un aviso de “le falta 1” para meter tensión.</li>
-        <li><b>Pausa y reanudar</b>, con cartones tapados. Pausa automática si sales de la app. Puedes salir al menú y continuar luego.</li>
-        <li><b>Tablero de bolas</b> con todos los números salidos, últimas 5 bolas a la vista y <b>voz del crupier</b> con frases típicas.</li>
-        <li><b>Resultado</b> con fichas ganadas y tu “atención”: cuántos números se te escaparon.</li>
-      </ul>
+      <h2>Economía de fichas</h2>
+      <table class="money">
+        <tr><td>Al crear la cuenta</td><td>500</td></tr>
+        <tr><td>Precio por cartón (va al bote)</td><td>20</td></tr>
+        <tr><td>Línea</td><td>30 % del bote</td></tr>
+        <tr><td>Bingo</td><td>70 % del bote</td></tr>
+        <tr><td>Empate en la misma bola</td><td>se reparte</td></tr>
+        <tr><td>Canto falso</td><td>−10</td></tr>
+        <tr><td>Bancarrota (no te llega para 1 cartón)</td><td>vuelves a 500</td></tr>
+      </table>
+      <p class="muted" style="margin-top:10px">Partida rápida: pagas 60 por 3 cartones y el bote es de 240, así que la línea da 72 y el bingo 168. Sin dinero real ni compras.</p>
     </section>
 
     <section>
@@ -542,10 +696,9 @@ label.f input:focus{border-color:var(--gold);outline:none}
           <h3>Para que enganche</h3>
           <ul>
             <li>Rivales con personalidad: la abuela que no falla una, el despistado que canta tarde.</li>
-            <li>Fichas virtuales, reto del día y racha de días seguidos.</li>
+            <li>Reto del día y racha de días seguidos con fichas extra.</li>
             <li>Logros: “Ojo de halcón”, “Madrugador”, “Remontada”.</li>
-            <li>Tapetes, colores de cartón y avatares desbloqueables.</li>
-            <li>Más premios opcionales: dos líneas, cuatro esquinas.</li>
+            <li>Tapetes, colores de cartón y gorros del crupier desbloqueables con fichas.</li>
           </ul>
         </div>
         <div style="--c:#7cc7a2">
@@ -554,8 +707,7 @@ label.f input:focus{border-color:var(--gold);outline:none}
             <li>Tutorial jugable de un minuto la primera vez.</li>
             <li>Ayudas configurables: pistas, resaltar al salir, números grandes.</li>
             <li>Velocidad del crupier y pausa siempre a mano.</li>
-            <li>Modo alto contraste y apto para daltónicos.</li>
-            <li>Instalable en el móvil como app (PWA), sin pasar por tiendas.</li>
+            <li>Instalable en el móvil como app (PWA).</li>
           </ul>
         </div>
         <div style="--c:#8fb4ff">
@@ -564,40 +716,34 @@ label.f input:focus{border-color:var(--gold);outline:none}
             <li>Salas online con amigos con un código de 4 letras.</li>
             <li>Ranking semanal entre amigos.</li>
             <li>Partida guardada en la nube para seguir en otro dispositivo.</li>
-            <li>Chat de reacciones rápidas en la mesa.</li>
           </ul>
         </div>
       </div>
     </section>
 
     <section>
-      <h2>Decisiones que necesito de ti</h2>
+      <h2>Pendiente de confirmar</h2>
       <div class="qs">
-        <div class="q"><b>¿“4 jugadores” te incluye a ti?</b><span>En el boceto sí: tú y 3 rivales. El máximo de 6 sería tú y 5 rivales.</span></div>
-        <div class="q"><b>¿Eliges “hasta” N cartones o exactamente N?</b><span>En el boceto, hasta N y como mínimo 1. Los rivales siempre llevan N.</span></div>
-        <div class="q"><b>¿Edad o fecha de nacimiento?</b><span>Propongo fecha: la edad se actualiza sola. En España, por debajo de 14 años hace falta el consentimiento de los padres para guardar datos, así que conviene fijar una edad mínima o un aviso.</span></div>
-        <div class="q"><b>¿Fichas virtuales sí o no?</b><span>Dan mucho juego. Sin dinero real ni compras canjeables, para que no cuente como juego de apuestas.</span></div>
-        <div class="q"><b>¿Solo línea y bingo?</b><span>Es lo clásico. Dos líneas o esquinas pueden ir como opción en la partida personalizada.</span></div>
+        <div class="q"><b>Precio del cartón y reparto del bote</b><span>He puesto 20 fichas por cartón, y 30 % del bote para la línea y 70 % para el bingo. ¿Te parece bien?</span></div>
+        <div class="q"><b>Edad mínima</b><span>En España, por debajo de 14 años hace falta el consentimiento de los padres para guardar datos. ¿Ponemos 14 como mínimo o un aviso para los menores?</span></div>
       </div>
     </section>
 
     <section>
-      <h2>Tecnología recomendada</h2>
-      <p>Firebase encaja bien y te lo recomiendo. Lo montaría así:</p>
+      <h2>Tecnología</h2>
       <dl class="stack">
-        <dt>App</dt><dd>Web con React + TypeScript (Vite), instalable como PWA. Funciona en móvil y ordenador.</dd>
-        <dt>Acceso</dt><dd>Firebase Authentication con Google y con correo y contraseña, con verificación del correo.</dd>
-        <dt>Datos</dt><dd>Firestore para el perfil, las fichas, las estadísticas y la partida en pausa.</dd>
-        <dt>Partida</dt><dd>Contra rivales de la casa se calcula en el propio móvil: va instantánea y aguanta sin cobertura. Para jugar online con amigos, las bolas las sacaría el servidor (Cloud Functions) para evitar trampas.</dd>
-        <dt>Publicación</dt><dd>Firebase Hosting, con un enlace de pruebas separado para tus testers. El plan gratuito llega para la fase de pruebas.</dd>
+        <dt>App</dt><dd>Web con React + TypeScript (Vite), instalable como PWA.</dd>
+        <dt>Acceso</dt><dd>Firebase Authentication con Google y con correo y contraseña.</dd>
+        <dt>Datos</dt><dd>Firestore: perfil, fichas, estadísticas y partida en pausa. Las fichas se validan en reglas de seguridad para que no se puedan inflar.</dd>
+        <dt>Publicación</dt><dd>Firebase Hosting con un enlace de pruebas para tus testers.</dd>
       </dl>
     </section>
 
     <section>
       <h2>Siguientes pasos</h2>
       <ol class="steps">
-        <li>Repasas el boceto y me respondes a las 5 decisiones.</li>
-        <li>Construyo la versión 1 en el repositorio con lo que acordemos.</li>
+        <li>Repasas esta versión y me confirmas los dos puntos pendientes.</li>
+        <li>Construyo la versión 1 en el repositorio.</li>
         <li>Creas el proyecto en Firebase y me pasas la configuración web.</li>
         <li>La publico en un enlace de pruebas para tus testers.</li>
       </ol>
@@ -610,6 +756,7 @@ label.f input:focus{border-color:var(--gold);outline:none}
 "use strict";
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /* ---------- random ---------- */
 const rnd = n => { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] % n; };
@@ -617,9 +764,10 @@ const between = (a, b) => a + rnd(b - a + 1);
 const shuffle = arr => { for (let i = arr.length - 1; i > 0; i--) { const j = rnd(i + 1); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; };
 
 /* ---------- data ---------- */
+const MAXN = 90, PRICE = 20, START_COINS = 500, FALSE_PENALTY = 10, SPLIT = { linea: .3, bingo: .7 };
 const TINTS = ["#fde2c8", "#d6ebf7", "#e3f1cf", "#f8d8e2", "#e9def8"];
-const BALLC = ["#e0442e", "#f08a24", "#e0a91f", "#6fa83a", "#1f9d74", "#1aa3c2", "#3b6fd8", "#7b55d6", "#c94ca0", "#8a6a4a"];
-const ballColor = n => BALLC[Math.min(9, Math.floor((n - 1) / 10))];
+const BALLC = ["#e0442e", "#f08a24", "#e0a91f", "#6fa83a", "#1f9d74", "#1aa3c2", "#3b6fd8", "#7b55d6", "#c94ca0"];
+const ballColor = n => BALLC[Math.min(8, Math.floor(n / 10))];
 const AV_COLORS = ["#e0442e", "#f08a24", "#1f9d74", "#3b6fd8", "#7b55d6", "#c94ca0"];
 const PERSONAS = [
   { n: "Abuela Pura", i: "AP", c: "#c94ca0" }, { n: "Paco", i: "PA", c: "#3b6fd8" },
@@ -631,34 +779,36 @@ const LEVELS = {
   normales:    { hit: .9,  min: 700, max: 1900 },
   expertos:    { hit: 1,   min: 400, max: 1100 }
 };
-const SPEED = { lento: 6000, normal: 4200, rapido: 2600 };
-const PHRASES = { 1: "el primerito", 15: "la niña bonita", 22: "los dos patitos", 33: "la edad de Cristo", 50: "medio siglo", 90: "el abuelo", 100: "¡el centenario!" };
-const PRIZE = { linea: 40, bingo: 150, falso: -10 };
+const SPEED = { lento: 6000, normal: 4300, rapido: 2800 };
+const PHRASES = { 1: "el primerito", 15: "la niña bonita", 22: "los dos patitos", 33: "la edad de Cristo", 50: "medio siglo", 90: "el abuelo" };
 
 const app = {
   user: { name: "", birth: "", color: 0 },
-  coins: 500,
-  cfg: { players: 4, cards: 2, speed: "normal", bots: "normales" },
+  coins: START_COINS,
+  cfg: { players: 4, cards: 3, speed: "normal", bots: "normales" },
   settings: { voice: true, phrases: true, sound: true, vibe: true, hints: true, highlight: false, big: false, autopause: true },
-  stats: { games: 0, lines: 0, bingos: 0, marked: 0, missed: 0 },
+  stats: { games: 0, lines: 0, bingos: 0, marked: 0, missed: 0, bankrupt: 0, best: START_COINS },
   screen: "login", settingsReturn: "home"
 };
-let g = null; // current game
+let g = null;
+const DEALER_SVG = document.getElementById("dealerArt").innerHTML;
+document.querySelector("#dealer svg").innerHTML = DEALER_SVG;
+const pot = cfg => cfg.players * cfg.cards * PRICE;
+const prizeOf = (cfg, type) => Math.round(pot(cfg) * SPLIT[type]);
 
-/* ---------- cards ---------- */
+/* ---------- cards (3x9, 1-90) ---------- */
+function colRange(c) { return c === 0 ? [1, 9] : c === 8 ? [80, 90] : [c * 10, c * 10 + 9]; }
 function genCard() {
   for (;;) {
-    const counts = Array(10).fill(1);
-    shuffle([...Array(10).keys()]).slice(0, 5).forEach(c => counts[c] = 2);
+    const counts = Array(9).fill(1); let extra = 6;
+    while (extra > 0) { const c = rnd(9); if (counts[c] < 3) { counts[c]++; extra--; } }
     const rows = [0, 0, 0], colRows = [];
-    for (let c = 0; c < 10; c++) {
-      const r = shuffle([0, 1, 2]).slice(0, counts[c]).sort();
-      colRows.push(r); r.forEach(x => rows[x]++);
-    }
+    for (let c = 0; c < 9; c++) { const r = shuffle([0, 1, 2]).slice(0, counts[c]).sort(); colRows.push(r); r.forEach(x => rows[x]++); }
     if (rows.some(x => x !== 5)) continue;
-    const grid = [0, 1, 2].map(() => Array(10).fill(0));
-    for (let c = 0; c < 10; c++) {
-      const pool = shuffle(Array.from({ length: 10 }, (_, i) => c * 10 + i + 1)).slice(0, counts[c]).sort((a, b) => a - b);
+    const grid = [0, 1, 2].map(() => Array(9).fill(0));
+    for (let c = 0; c < 9; c++) {
+      const [a, b] = colRange(c);
+      const pool = shuffle(Array.from({ length: b - a + 1 }, (_, i) => a + i)).slice(0, counts[c]).sort((x, y) => x - y);
       colRows[c].forEach((r, i) => grid[r][c] = pool[i]);
     }
     return { grid, nums: new Set(grid.flat().filter(Boolean)), serie: between(1, 9), no: String(between(1, 9999)).padStart(4, "0"), tint: rnd(5), marked: new Set() };
@@ -674,7 +824,7 @@ function cardEl(card, ci = 0, interactive = false) {
   el.className = "card"; el.style.setProperty("--tint", TINTS[card.tint]);
   el.innerHTML = `<div class="card-head"><span>Serie ${card.serie}</span><b>MiBingo</b><span>Nº ${card.no}</span></div>`;
   const grid = document.createElement("div"); grid.className = "grid";
-  for (let r = 0; r < 3; r++) for (let c = 0; c < 10; c++) {
+  for (let r = 0; r < 3; r++) for (let c = 0; c < 9; c++) {
     const n = card.grid[r][c];
     const cell = document.createElement(interactive && n ? "button" : "span");
     cell.className = "cell" + (n ? "" : " empty");
@@ -692,19 +842,26 @@ const ballEl = (n, s) => { const d = document.createElement("div"); d.className 
 
 /* ---------- feedback ---------- */
 let actx;
-function beep(f = 660, d = .08, type = "sine", vol = .07) {
+function beep(f = 660, d = .08, type = "sine", vol = .07, delay = 0) {
   if (!app.settings.sound) return;
   try {
     actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const t0 = actx.currentTime + delay;
     const o = actx.createOscillator(), gn = actx.createGain();
-    o.type = type; o.frequency.value = f; gn.gain.value = vol;
-    gn.gain.exponentialRampToValueAtTime(.0001, actx.currentTime + d);
-    o.connect(gn).connect(actx.destination); o.start(); o.stop(actx.currentTime + d);
+    o.type = type; o.frequency.setValueAtTime(f, t0); gn.gain.setValueAtTime(vol, t0);
+    gn.gain.exponentialRampToValueAtTime(.0001, t0 + d);
+    o.connect(gn).connect(actx.destination); o.start(t0); o.stop(t0 + d);
   } catch (e) {}
 }
-function fanfare() { [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => beep(f, .16, "triangle", .08), i * 120)); }
+const fanfare = () => [523, 659, 784, 1046, 784, 1046].forEach((f, i) => beep(f, .18, "triangle", .08, i * .12));
+const sadTrombone = () => [392, 370, 349, 311].forEach((f, i) => beep(f, i === 3 ? .7 : .3, "sawtooth", .045, i * .32));
+const coinSound = n => { for (let i = 0; i < n; i++) beep(1400 + rnd(500), .05, "square", .025, i * .06); };
+const rattle = () => { for (let i = 0; i < 7; i++) beep(220 + rnd(160), .03, "square", .02, i * .08); };
 function vibe(p) { if (app.settings.vibe && navigator.vibrate) try { navigator.vibrate(p); } catch (e) {} }
-function say(t) {
+function say(t, onEnd) {
+  const dealer = $("#dealer");
+  dealer.classList.add("talking"); clearTimeout(say.t);
+  say.t = setTimeout(() => dealer.classList.remove("talking"), 1300);
   if (!app.settings.voice || !("speechSynthesis" in window)) return;
   try {
     speechSynthesis.cancel();
@@ -715,14 +872,64 @@ function say(t) {
   } catch (e) {}
 }
 let toastT;
-function toast(msg) { const t = $("#toast"); t.textContent = msg; t.hidden = false; t.style.animation = "none"; void t.offsetWidth; t.style.animation = ""; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2200); }
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.hidden = false; t.style.animation = "none"; void t.offsetWidth; t.style.animation = ""; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2300); }
+
+/* ---------- fx: confetti + coins ---------- */
+const fx = $("#fx"), fctx = fx.getContext("2d"); let parts = [], fxOn = false;
+function confetti(n = 140, y = .25) {
+  if (reduceMotion) return;
+  const box = $("#screenbox").getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
+  fx.width = box.width * dpr; fx.height = box.height * dpr; fctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const cols = ["#e0442e", "#f3b73b", "#1aa3c2", "#6fa83a", "#7b55d6", "#fbf5e6", "#c94ca0"];
+  for (let i = 0; i < n; i++) parts.push({ x: box.width / 2 + (Math.random() - .5) * 80, y: box.height * y, vx: (Math.random() - .5) * 11, vy: -Math.random() * 10 - 3, w: 5 + Math.random() * 5, h: 3 + Math.random() * 4, c: cols[i % cols.length], r: Math.random() * 6, vr: (Math.random() - .5) * .4, life: 150 + Math.random() * 80, W: box.width, H: box.height });
+  if (!fxOn) { fxOn = true; requestAnimationFrame(fxLoop); }
+}
+function fxLoop() {
+  const W = fx.width, H = fx.height; fctx.clearRect(0, 0, W, H);
+  parts.forEach(p => { p.vy += .22; p.vx *= .985; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.life--;
+    fctx.save(); fctx.translate(p.x, p.y); fctx.rotate(p.r); fctx.fillStyle = p.c; fctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h * Math.abs(Math.cos(p.r * 2))); fctx.restore(); });
+  parts = parts.filter(p => p.life > 0 && p.y < p.H + 30);
+  if (parts.length) requestAnimationFrame(fxLoop); else { fxOn = false; fctx.clearRect(0, 0, W, H); }
+}
+function coinFx(n, mode, from) {
+  if (reduceMotion) return;
+  const box = $("#screenbox"), br = box.getBoundingClientRect();
+  const target = (app.screen === "game" ? $("#gChips") : $("#hChips"));
+  const tr = target && target.offsetParent ? target.getBoundingClientRect() : { left: br.right - 60, top: br.top + 40, width: 0, height: 0 };
+  for (let i = 0; i < n; i++) {
+    const c = document.createElement("span"); c.className = "coinfx " + mode;
+    const dx = (Math.random() - .5) * 260;
+    c.style.setProperty("--dx", dx + "px");
+    if (mode === "rain") { c.style.left = (Math.random() * 100) + "%"; c.style.animationDelay = (Math.random() * .8) + "s"; }
+    else {
+      const fx0 = from ? from.x : br.width / 2, fy0 = from ? from.y : br.height / 2;
+      c.style.left = (fx0 - 11 + (Math.random() - .5) * 40) + "px"; c.style.top = (fy0 - 11 + (Math.random() - .5) * 30) + "px";
+      c.style.animationDelay = (i * .04) + "s";
+      if (mode === "gather") { c.style.setProperty("--tx", (tr.left - br.left + tr.width / 2 - fx0) + "px"); c.style.setProperty("--ty", (tr.top - br.top + tr.height / 2 - fy0) + "px"); }
+    }
+    box.appendChild(c); setTimeout(() => c.remove(), 2800);
+  }
+}
+function countTo(el, from, to, ms = 900) {
+  if (reduceMotion) { el.textContent = to; return; }
+  const t0 = performance.now();
+  const step = t => { const k = Math.min(1, (t - t0) / ms), e = 1 - Math.pow(1 - k, 3); el.textContent = Math.round(from + (to - from) * e); if (k < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+function setCoins(v, animate = true) {
+  const from = app.coins; app.coins = Math.max(0, v); app.stats.best = Math.max(app.stats.best, app.coins);
+  [["#gCoins", "#gChips"], ["#hCoins", "#hChips"]].forEach(([n, c]) => {
+    const el = $(n); if (animate) countTo(el, from, app.coins, 700); else el.textContent = app.coins;
+    const ch = $(c); ch.classList.remove("bump"); void ch.offsetWidth; ch.classList.add("bump");
+  });
+}
 
 /* ---------- navigation ---------- */
 function show(name) {
   if (app.screen === "game" && name !== "game" && name !== "settings" && g && !g.over && !g.paused) pauseGame();
   $$(".screen").forEach(s => s.hidden = s.dataset.screen !== name);
   app.screen = name;
-  $$("#jump button").forEach(b => b.classList.toggle("on", b.dataset.jump === name || (name === "settings" && false)));
+  $$("#jump button").forEach(b => b.classList.toggle("on", b.dataset.jump === name));
   if (name === "home") renderHome();
   if (name === "custom") renderCustom();
   if (name === "stats") renderStats();
@@ -730,20 +937,23 @@ function show(name) {
   if (name === "profile") renderProfile();
   const sc = document.querySelector(`.screen[data-screen="${name}"]`); if (sc) sc.scrollTop = 0;
 }
-document.addEventListener("click", e => {
-  const b = e.target.closest("[data-go]"); if (b) show(b.dataset.go);
-});
+document.addEventListener("click", e => { const b = e.target.closest("[data-go]"); if (b) show(b.dataset.go); });
+function ensureUser() { if (!app.user.name) { app.user.name = "Lucía"; app.user.birth = "1992-03-08"; } }
 $("#jump").addEventListener("click", e => {
   const b = e.target.closest("[data-jump]"); if (!b) return;
   const to = b.dataset.jump;
-  if (!app.user.name && to !== "login" && to !== "profile") { app.user.name = "Lucía"; app.user.birth = "1992-03-08"; }
-  if (to === "pick") { preparePick(); }
-  if (to === "game") {
-    if (!g || g.over) { app.cfg = { ...app.cfg }; const cards = Array.from({ length: app.cfg.cards }, genCard); startGame(cards); return; }
-  }
+  $("#bankOv").hidden = true;
+  if (to !== "login" && to !== "profile") ensureUser();
+  if (to === "pick") preparePick();
+  if (to === "game") { if (!g || g.over) { quickStartDemo(); return; } }
+  if (to === "win" || to === "lose" || to === "bank") { demoEnding(to); return; }
   if (to === "profile" && !app.user.name) app.user.name = "Lucía";
   show(to);
 });
+function quickStartDemo() {
+  if (app.coins < app.cfg.cards * PRICE) setCoins(START_COINS, false);
+  startGame(Array.from({ length: app.cfg.cards }, genCard));
+}
 
 /* ---------- login & profile ---------- */
 let signIn = false;
@@ -779,6 +989,7 @@ $("#pSave").onclick = () => {
   if (n.length < 2) { err.textContent = "Escribe tu nombre, al menos 2 letras."; err.hidden = false; return; }
   if (!b || isNaN(a) || a < 0 || a > 120) { err.textContent = "Elige tu fecha de nacimiento."; err.hidden = false; return; }
   err.hidden = true; app.user.name = n; app.user.birth = b; show("home");
+  setTimeout(() => { coinFx(14, "gather", { x: 190, y: 380 }); coinSound(8); toast("¡500 fichas de bienvenida!"); }, 250);
 };
 
 /* ---------- home ---------- */
@@ -790,7 +1001,11 @@ function renderHome() {
   if (g && !g.over) { r.hidden = false; $("#resumeTxt").textContent = `Partida en pausa · bola ${g.drawn.length}`; } else r.hidden = true;
 }
 $("#resumeBtn").onclick = () => show("game");
-$("#goQuick").onclick = () => { app.cfg = { players: 4, cards: 2, speed: app.cfg.speed, bots: "normales" }; app.pickFrom = "home"; preparePick(); show("pick"); };
+$("#goQuick").onclick = () => {
+  const cfg = { players: 4, cards: 3, speed: app.cfg.speed, bots: "normales" };
+  if (app.coins < cfg.cards * PRICE) { toast(`La rápida cuesta ${cfg.cards * PRICE} fichas. Prueba una personalizada con menos cartones.`); return; }
+  app.cfg = cfg; app.pickFrom = "home"; preparePick(); show("pick");
+};
 $("#goCustom").onclick = () => show("custom");
 $("#goSettings").onclick = () => { app.settingsReturn = "home"; show("settings"); };
 $("#logout").onclick = () => { show("login"); toast("Sesión cerrada"); };
@@ -799,26 +1014,32 @@ $("#logout").onclick = () => { show("login"); toast("Sesión cerrada"); };
 function renderCustom() {
   $$(".stepper").forEach(s => s.querySelector("output").textContent = app.cfg[s.dataset.key]);
   $$(".seg").forEach(s => s.querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.v === app.cfg[s.dataset.key])));
-  const r = app.cfg.players - 1;
-  $("#cSummary").innerHTML = `Tú + <b>${r} ${r === 1 ? "rival" : "rivales"}</b> · <b>${app.cfg.players * app.cfg.cards} cartones</b> en juego · una bola cada <b>${(SPEED[app.cfg.speed] / 1000).toFixed(1).replace(".", ",")} s</b>`;
+  const r = app.cfg.players - 1, cost = app.cfg.cards * PRICE, ok = app.coins >= cost;
+  $("#cBill").innerHTML = `
+    <div><span>Tú + ${r} ${r === 1 ? "rival" : "rivales"} · ${app.cfg.players * app.cfg.cards} cartones</span><b>bola cada ${(SPEED[app.cfg.speed] / 1000).toFixed(1).replace(".", ",")} s</b></div>
+    <div><span>Pagas por tus ${app.cfg.cards} cartones</span><b class="${ok ? "" : "neg"}">${cost}</b></div>
+    <div><span>Bote total</span><b>${pot(app.cfg)}</b></div>
+    <div><span>Línea · Bingo</span><b class="pos">${prizeOf(app.cfg, "linea")} · ${prizeOf(app.cfg, "bingo")}</b></div>`;
+  $("#customGo").disabled = !ok;
+  $("#customGo").textContent = ok ? "Elegir mis cartones" : `Te faltan ${cost - app.coins} fichas`;
 }
 $$(".stepper").forEach(s => s.addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
-  const k = s.dataset.key, v = Math.max(+s.dataset.min, Math.min(+s.dataset.max, app.cfg[k] + +b.dataset.d));
-  app.cfg[k] = v; renderCustom(); beep(500, .04);
+  const k = s.dataset.key; app.cfg[k] = Math.max(+s.dataset.min, Math.min(+s.dataset.max, app.cfg[k] + +b.dataset.d));
+  renderCustom(); beep(500, .04);
 }));
 $$(".seg").forEach(s => s.addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; app.cfg[s.dataset.key] = b.dataset.v; renderCustom(); }));
 $("#customGo").onclick = () => { app.pickFrom = "custom"; preparePick(); show("pick"); };
 
-/* ---------- pick ---------- */
+/* ---------- pick (exactly N) ---------- */
 const pick = { cards: [], sel: new Set() };
 function preparePick() { pick.cards = Array.from({ length: 10 }, genCard); pick.sel.clear(); renderPick(); }
 function renderPick() {
   const max = app.cfg.cards, list = $("#pickList"); list.innerHTML = "";
-  $("#pickTitle").textContent = max === 1 ? "Elige 1 cartón" : `Elige hasta ${max}`;
+  $("#pickTitle").textContent = max === 1 ? "Elige 1 cartón" : `Elige ${max} cartones`;
   pick.cards.forEach((c, i) => {
-    const w = document.createElement("div"); w.className = "pick" + (pick.sel.has(i) ? " on" : "");
-    w.tabIndex = 0; w.setAttribute("role", "button"); w.setAttribute("aria-pressed", pick.sel.has(i));
+    const w = document.createElement("div"); w.className = "pick";
+    w.tabIndex = 0; w.setAttribute("role", "button");
     w.innerHTML = `<span class="tick">✓</span>`; w.appendChild(cardEl(c));
     w.onclick = () => togglePick(i);
     w.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); togglePick(i); } };
@@ -827,21 +1048,27 @@ function renderPick() {
   updPick();
 }
 function updPick() {
-  $("#pickCount").textContent = `${pick.sel.size}/${app.cfg.cards}`;
-  $("#pickGo").disabled = pick.sel.size === 0;
-  $("#pickGo").textContent = pick.sel.size ? `A la mesa (${pick.sel.size})` : "A la mesa";
+  const n = app.cfg.cards, cost = n * PRICE, full = pick.sel.size === n;
+  $("#pickCount").textContent = `${pick.sel.size}/${n}`;
+  $("#pickCount").classList.toggle("full", full);
+  $("#pickGo").disabled = !full;
+  $("#pickGo").textContent = full ? "A la mesa" : `Faltan ${n - pick.sel.size}`;
+  $("#payCost").textContent = cost; $("#payLeft").textContent = Math.max(0, app.coins - cost);
   $$("#pickList .pick").forEach((w, i) => { w.classList.toggle("on", pick.sel.has(i)); w.setAttribute("aria-pressed", pick.sel.has(i)); });
 }
 function togglePick(i) {
   if (pick.sel.has(i)) pick.sel.delete(i);
   else if (pick.sel.size < app.cfg.cards) { pick.sel.add(i); beep(720, .05); }
-  else { toast(`Máximo ${app.cfg.cards}. Quita uno para cambiarlo.`); return; }
+  else { toast(`Ya tienes ${app.cfg.cards}. Quita uno para cambiarlo.`); return; }
   updPick();
 }
 $("#pickNew").onclick = () => { preparePick(); $("#pickList").scrollTop = 0; toast("Diez cartones nuevos"); };
 $("#pickRand").onclick = () => { pick.sel = new Set(shuffle([...Array(10).keys()]).slice(0, app.cfg.cards)); updPick(); };
 $("#pickBack").onclick = () => show(app.pickFrom === "custom" ? "custom" : "home");
-$("#pickGo").onclick = () => startGame([...pick.sel].sort((a, b) => a - b).map(i => pick.cards[i]));
+$("#pickGo").onclick = () => {
+  if (app.coins < app.cfg.cards * PRICE) { toast("No te llegan las fichas para estos cartones"); return; }
+  startGame([...pick.sel].sort((a, b) => a - b).map(i => pick.cards[i]));
+};
 
 /* ---------- scheduler (pausable timers) ---------- */
 class Scheduler {
@@ -859,61 +1086,79 @@ const ME = { me: true };
 function startGame(myCards) {
   if (g) g.sched.clear();
   try { speechSynthesis.cancel(); } catch (e) {}
-  const cfg = { ...app.cfg };
+  const cfg = { ...app.cfg }, cost = cfg.cards * PRICE;
   myCards.forEach(c => c.marked = new Set());
   const personas = shuffle(PERSONAS.slice()).slice(0, cfg.players - 1);
   g = {
-    cfg, bag: shuffle(Array.from({ length: 100 }, (_, i) => i + 1)), drawn: [], drawnSet: new Set(),
-    phase: "linea", paused: false, over: false, claim: null, drawTask: null,
-    me: { cards: myCards }, hints: 3, earned: 0, falseClaims: 0, errors: 0,
+    cfg, bag: shuffle(Array.from({ length: MAXN }, (_, i) => i + 1)), drawn: [], drawnSet: new Set(),
+    phase: "linea", paused: false, over: false, claim: null, drawTask: null, spinTask: null,
+    me: { cards: myCards }, hints: 3, prizes: 0, penalty: 0, cost, falseClaims: 0, coinsBefore: app.coins,
     bots: personas.map(p => ({ ...p, cards: Array.from({ length: cfg.cards }, () => { const c = genCard(); c.missed = new Set(); return c; }), claimFor: null })),
     lineWinners: [], bingoWinners: [], sched: new Scheduler()
   };
-  ME.name = app.user.name || "Tú";
   buildGame();
   show("game");
+  $("#gCoins").textContent = app.coins;
+  setCoins(app.coins - cost);
+  toast(`Pagas ${cost} fichas por ${cfg.cards} ${cfg.cards === 1 ? "cartón" : "cartones"}. Bote: ${pot(cfg)}`);
   $("#callText").textContent = "¡Atentos, que empezamos!";
   say("Atentos, que empezamos");
-  g.drawTask = g.sched.add(drawBall, 2200);
+  g.drawTask = g.sched.add(drawBall, 2400);
 }
 
 function buildGame() {
-  // seats
   const seats = $("#seats"); seats.innerHTML = "";
   const k = g.bots.length, L = Math.ceil(k / 2), R = k - L, angles = [];
-  for (let i = 0; i < L; i++) angles.push(125 + 110 * (i + .5) / L);
-  for (let i = 0; i < R; i++) angles.push(55 - 110 * (i + .5) / R);
+  for (let i = 0; i < L; i++) angles.push(130 + 100 * (i + .5) / L);
+  for (let i = 0; i < R; i++) angles.push(50 - 100 * (i + .5) / R);
   g.bots.forEach((b, i) => {
     const a = angles[i] * Math.PI / 180;
-    const x = Math.max(12, Math.min(88, 50 + 43 * Math.cos(a))), y = 57 + 37 * Math.sin(a);
+    const x = Math.max(12, Math.min(88, 50 + 43 * Math.cos(a))), y = 66 + 27 * Math.sin(a);
     const s = document.createElement("div"); s.className = "seat"; s.style.left = x + "%"; s.style.top = y + "%";
     s.innerHTML = `<div class="av" style="--c:${b.c}">${b.i}</div><div class="nm">${b.n}</div><div class="pill"></div>`;
     b.el = s; seats.appendChild(s); updSeat(b);
   });
-  const me = document.createElement("div"); me.className = "seat me"; me.style.left = "50%"; me.style.top = "93%";
+  const me = document.createElement("div"); me.className = "seat me"; me.style.left = "50%"; me.style.top = "94%";
   me.innerHTML = `<div class="av" style="--c:${AV_COLORS[app.user.color]}">${initials(app.user.name || "Tú")}</div><div class="nm">Tú</div>`;
   ME.el = me; seats.appendChild(me);
-  // centre
-  $("#bombo").innerHTML = ""; $("#lastBalls").innerHTML = ""; $("#banner").hidden = true;
-  $("#dealerSt").textContent = "Crupier";
-  // cards
+  $("#plate").innerHTML = ""; $("#lastBalls").innerHTML = ""; $("#banner").hidden = true;
+  $("#dealer").className = "dealer"; $("#bombo").className = "bombo";
+  // cards carousel
   const box = $("#myCards"); box.innerHTML = ""; box.classList.remove("blur");
+  box.classList.toggle("single", g.me.cards.length === 1);
   $("#phone").classList.toggle("big", app.settings.big);
-  g.me.cards.forEach((c, i) => box.appendChild(cardEl(c, i, true)));
+  g.me.cards.forEach((c, i) => { const s = document.createElement("div"); s.className = "slide"; s.appendChild(cardEl(c, i, true)); box.appendChild(s); });
+  box.scrollTop = 0;
+  const dots = $("#dots"); dots.innerHTML = "";
+  if (g.me.cards.length > 1) {
+    g.me.cards.forEach((_, i) => { const d = document.createElement("button"); d.type = "button"; d.setAttribute("aria-label", "Cartón " + (i + 1)); d.onclick = () => goSlide(i); dots.appendChild(d); });
+    dots.insertAdjacentHTML("beforeend", `<span class="lbl" id="dotLbl"></span>`);
+  }
+  updDots();
   // board
   const bd = $("#board"); bd.innerHTML = "";
-  for (let n = 1; n <= 100; n++) { const s = document.createElement("span"); s.textContent = n; s.id = "bd" + n; bd.appendChild(s); }
+  for (let n = 1; n <= MAXN; n++) { const s = document.createElement("span"); s.textContent = n; s.id = "bd" + n; bd.appendChild(s); }
   $("#boardSheet").hidden = true; $("#pauseOv").hidden = true; $("#quitOv").hidden = true; $("#resultOv").hidden = true;
   $("#hintBtn").hidden = !app.settings.hints;
   updTop();
 }
+function slideH() { const s = $("#myCards .slide"); return s ? s.getBoundingClientRect().height + 10 : 1; }
+function curSlide() { const el = $("#myCards"); if (!el.clientHeight) return 0; if (el.scrollTop + el.clientHeight >= el.scrollHeight - 4) return g.me.cards.length - 1; return Math.round(el.scrollTop / slideH()); }
+function goSlide(i) { $("#myCards").scrollTo({ top: i * slideH(), behavior: reduceMotion ? "auto" : "smooth" }); }
+function updDots() {
+  if (!g) return;
+  const i = Math.min(g.me.cards.length - 1, curSlide());
+  $$("#dots button").forEach((d, j) => d.classList.toggle("on", i === j));
+  const l = $("#dotLbl"); if (l) l.textContent = `Cartón ${i + 1} de ${g.me.cards.length} · desliza ↕`;
+}
+$("#myCards").addEventListener("scroll", () => { cancelAnimationFrame(updDots.r); updDots.r = requestAnimationFrame(updDots); }, { passive: true });
 
 function updTop() {
   $("#gCount").textContent = "Bola " + g.drawn.length;
-  $("#gLeft").textContent = 100 - g.drawn.length;
-  const ph = $("#gPhase");
-  ph.textContent = g.phase === "linea" ? "Se juega LÍNEA" : "Se juega BINGO";
-  ph.classList.toggle("bingo", g.phase !== "linea");
+  $("#gLeft").textContent = MAXN - g.drawn.length;
+  const ph = $("#gPhase"), type = g.phase === "linea" ? "linea" : "bingo";
+  ph.innerHTML = `${type === "linea" ? "LÍNEA" : "BINGO"} <span class="coin"></span>${prizeOf(g.cfg, type)}`;
+  ph.classList.toggle("bingo", type === "bingo");
   $("#claimL").disabled = g.phase !== "linea";
   $("#hintLeft").textContent = g.hints;
 }
@@ -929,34 +1174,39 @@ function bubble(who, txt) {
   const b = document.createElement("span"); b.className = "bub"; b.textContent = txt; el.appendChild(b);
   setTimeout(() => b.remove(), 1800);
 }
-
 function callTexts(n) {
   const p = app.settings.phrases && PHRASES[n];
   const disp = p ? `El ${n}, ${p}` : `El ${n}`;
   let spoken = `El ${n}`;
-  if (p) spoken += `, ${p}`; else if (n > 10 && n < 100 && n % 10) spoken += `. ${Math.floor(n / 10)}, ${n % 10}`;
-  return { show: disp, spoken };
+  if (p) spoken += `, ${p}`; else if (n > 10 && n % 10) spoken += `. ${Math.floor(n / 10)}, ${n % 10}`;
+  return { disp, spoken };
 }
 
+// 1) dealer cranks the bombo, 2) the ball rolls out and is called
 function drawBall() {
   if (!g || g.over) return;
   g.drawTask = null;
   if (!g.bag.length) { finishGame(); return; }
+  $("#dealer").classList.add("drawing"); $("#bombo").classList.add("fast");
+  $("#callText").textContent = "Girando el bombo…";
+  rattle();
+  g.spinTask = g.sched.add(revealBall, 950);
+}
+function stopSpin() { $("#dealer").classList.remove("drawing"); $("#bombo").classList.remove("fast"); }
+function revealBall() {
+  g.spinTask = null; stopSpin();
+  if (!g || g.over) return;
   const n = g.bag.pop(); g.drawn.push(n); g.drawnSet.add(n);
-  // ball
-  const bo = $("#bombo"); bo.innerHTML = ""; const b = ballEl(n); b.classList.add("drop"); bo.appendChild(b);
-  const t = callTexts(n); $("#callText").textContent = t.show; say(t.spoken);
-  beep(880, .06, "triangle"); setTimeout(() => beep(1180, .05, "triangle"), 70);
-  // strip
+  const bo = $("#bombo"); bo.classList.remove("pop"); void bo.offsetWidth; bo.classList.add("pop");
+  const pl = $("#plate"); pl.innerHTML = ""; const b = ballEl(n); b.classList.add("drop"); pl.appendChild(b);
+  const t = callTexts(n); $("#callText").textContent = t.disp; say(t.spoken);
+  beep(880, .06, "triangle"); beep(1180, .05, "triangle", .07, .07);
   const lb = $("#lastBalls"); lb.innerHTML = "";
   g.drawn.slice(-6, -1).reverse().forEach(x => lb.appendChild(ballEl(x)));
   if (!lb.children.length) lb.innerHTML = `<span class="small">—</span>`;
-  // board
   $$("#board .lastn").forEach(s => s.classList.remove("lastn"));
-  const bs = $("#bd" + n); bs.classList.add("on", "lastn");
-  // assisted highlight
+  $("#bd" + n).classList.add("on", "lastn");
   if (app.settings.highlight) $$(`#myCards .cell[data-n="${n}"]`).forEach(c => { c.classList.add("just"); setTimeout(() => c.classList.remove("just"), 1800); });
-  // bots
   const lv = LEVELS[g.cfg.bots];
   g.bots.forEach(bot => bot.cards.forEach(c => {
     c.missed.forEach(m => { if (rnd(100) < 45) { c.missed.delete(m); g.sched.add(() => botMark(bot, c, m), between(lv.min, lv.max)); } });
@@ -966,7 +1216,7 @@ function drawBall() {
     }
   }));
   updTop();
-  if (!g.claim) g.drawTask = g.sched.add(drawBall, SPEED[g.cfg.speed]);
+  if (!g.claim) g.drawTask = g.sched.add(drawBall, SPEED[g.cfg.speed] - 950);
 }
 
 function botMark(bot, c, n) {
@@ -984,10 +1234,12 @@ function claim(who, type) {
   if (!g.claim) {
     g.claim = { type, winners: [who] };
     g.sched.cancel(g.drawTask); g.drawTask = null;
+    if (g.spinTask) { g.sched.cancel(g.spinTask); g.spinTask = null; stopSpin(); }
     $("#banTitle").textContent = label;
     $("#banSub").textContent = (who.me ? "La cantas tú" : `La canta ${who.n}`) + " · el crupier comprueba…";
     $("#banner").hidden = false;
-    $("#dealerSt").textContent = "Comprobando";
+    $("#dealer").classList.add("checking");
+    $("#callText").textContent = "Comprobando el cartón…";
     say(type === "linea" ? "¡Línea! Comprobamos" : "¡Bingo! Comprobamos");
     beep(392, .2, "square", .05);
     g.sched.add(resolveClaim, 2000);
@@ -996,28 +1248,34 @@ function claim(who, type) {
     $("#banSub").textContent = `¡Y también ${who.me ? "tú" : who.n}! Se reparte el premio`;
   }
 }
-
 function winnersText(ws) { return ws.map(w => w.me ? "tú" : w.n).join(" y "); }
 function resolveClaim() {
   if (!g || !g.claim) return;
   const { type, winners } = g.claim; g.claim = null;
+  $("#dealer").classList.remove("checking");
   const meWon = winners.includes(ME);
-  const prize = Math.round(PRIZE[type] / winners.length);
-  if (meWon) { g.earned += prize; fanfare(); vibe([60, 40, 120]); }
+  const prize = Math.round(prizeOf(g.cfg, type) / winners.length);
+  if (meWon) {
+    g.prizes += prize;
+    const r = ME.el.getBoundingClientRect(), br = $("#screenbox").getBoundingClientRect();
+    coinFx(12, "gather", { x: r.left - br.left + r.width / 2, y: r.top - br.top });
+    setTimeout(() => setCoins(app.coins + prize), 700);
+    coinSound(10); vibe([60, 40, 120]);
+    if (type === "linea") { confetti(70, .3); fanfare(); $("#dealer").classList.add("happy"); setTimeout(() => $("#dealer").classList.remove("happy"), 1500); }
+  }
   if (type === "linea") {
     g.lineWinners = winners;
     if (meWon) app.stats.lines++;
-    $("#banTitle").textContent = "Línea correcta";
-    $("#banSub").textContent = (meWon ? `¡Enhorabuena! +${prize} fichas` : `Para ${winnersText(winners)}`) + " · ahora, a por el bingo";
-    $("#dealerSt").textContent = "Crupier";
+    $("#banTitle").textContent = meWon ? `+${prize} fichas` : "Línea correcta";
+    $("#banSub").textContent = (meWon ? "¡Tu línea es buena!" : `Para ${winnersText(winners)}`) + " · ahora, a por el bingo";
+    $("#callText").textContent = "Seguimos para bingo";
     say("Línea correcta. Seguimos para bingo");
     g.phase = "bingo";
     g.bots.forEach(b => { b.claimFor = null; updSeat(b); });
-    $$("#myCards .card").forEach((el, i) => el.classList.toggle("lined", hasLine(g.me.cards[i]) && meWon));
+    if (meWon) $$("#myCards .card").forEach((el, i) => el.classList.toggle("lined", hasLine(g.me.cards[i])));
     updTop();
     g.sched.add(() => { $("#banner").hidden = true; }, 2200);
     g.drawTask = g.sched.add(drawBall, 2600);
-    // a bot might already have bingo
     g.bots.forEach(b => { if (b.cards.some(hasBingo)) { b.claimFor = "bingo"; g.sched.add(() => claim(b, "bingo"), between(2800, 3400)); } });
   } else {
     g.bingoWinners = winners;
@@ -1033,8 +1291,8 @@ function userClaim(type) {
   const ok = g.me.cards.some(type === "linea" ? hasLine : hasBingo);
   if (ok) { claim(ME, type); vibe(40); }
   else {
-    g.falseClaims++; g.earned += PRIZE.falso; bubble(ME, "¡ups!");
-    toast(`Canto falso: no tienes ${type === "linea" ? "línea" : "bingo"} marcado. −10 fichas`);
+    g.falseClaims++; g.penalty += FALSE_PENALTY; setCoins(app.coins - FALSE_PENALTY); bubble(ME, "¡ups!");
+    toast(`Canto falso: no tienes ${type === "linea" ? "línea" : "bingo"} marcado. −${FALSE_PENALTY} fichas`);
     beep(180, .25, "sawtooth", .05); vibe([30, 30, 30]);
   }
 }
@@ -1045,7 +1303,7 @@ $("#myCards").addEventListener("click", e => {
   const cell = e.target.closest(".cell[data-n]"); if (!cell || !g || g.over || g.paused) return;
   const n = +cell.dataset.n, card = g.me.cards[+cell.dataset.ci];
   if (!g.drawnSet.has(n)) {
-    g.errors++; cell.classList.remove("shake"); void cell.offsetWidth; cell.classList.add("shake");
+    cell.classList.remove("shake"); void cell.offsetWidth; cell.classList.add("shake");
     setTimeout(() => cell.classList.remove("shake"), 400);
     toast(`El ${n} todavía no ha salido`); beep(200, .12, "square", .04); return;
   }
@@ -1061,17 +1319,17 @@ $("#hintBtn").onclick = () => {
   if (!cells.length) { toast("Lo llevas todo al día. ¡Bien visto!"); return; }
   g.hints--; updTop();
   cells.forEach(c => { c.classList.add("hint"); setTimeout(() => c.classList.remove("hint"), 3000); });
-  cells[0].scrollIntoView({ block: "nearest", behavior: "smooth" });
-  toast(cells.length === 1 ? "Se te ha pasado 1 número" : `Se te han pasado ${cells.length} números`);
+  goSlide(+cells[0].dataset.ci);
+  const cardsWith = new Set(cells.map(c => +c.dataset.ci)).size;
+  toast((cells.length === 1 ? "Se te ha pasado 1 número" : `Se te han pasado ${cells.length} números`) + (cardsWith > 1 ? ` en ${cardsWith} cartones` : ""));
 };
-
 $("#boardBtn").onclick = () => { $("#boardSheet").hidden = false; };
 $("#boardClose").onclick = () => { $("#boardSheet").hidden = true; };
 
 /* pause */
 function pauseGame() {
   if (!g || g.over || g.paused) return;
-  g.paused = true; g.sched.pause();
+  g.paused = true; g.sched.pause(); stopSpin();
   try { speechSynthesis.cancel(); } catch (e) {}
   $("#myCards").classList.add("blur");
   $("#pauseInfo").textContent = `Vamos por la bola ${g.drawn.length}. El crupier espera y tus cartones están tapados.`;
@@ -1081,9 +1339,10 @@ function resumeGame() {
   if (!g || !g.paused) return;
   $("#pauseOv").hidden = true; $("#myCards").classList.remove("blur");
   g.paused = false;
-  $("#callText").textContent = "Seguimos…";
+  if (g.spinTask) { $("#dealer").classList.add("drawing"); $("#bombo").classList.add("fast"); }
+  else $("#callText").textContent = "Seguimos…";
   g.sched.resume();
-  if (!g.drawTask && !g.claim) g.drawTask = g.sched.add(drawBall, 1500);
+  if (!g.drawTask && !g.spinTask && !g.claim) g.drawTask = g.sched.add(drawBall, 1500);
 }
 $("#pauseBtn").onclick = pauseGame;
 $("#resumeGame").onclick = resumeGame;
@@ -1091,43 +1350,133 @@ $("#pauseSettings").onclick = () => { app.settingsReturn = "game"; show("setting
 $("#pauseExit").onclick = () => show("home");
 $("#pauseQuit").onclick = () => { $("#quitOv").hidden = false; };
 $("#quitNo").onclick = () => { $("#quitOv").hidden = true; };
-$("#quitYes").onclick = () => { g.sched.clear(); g.over = true; $("#quitOv").hidden = true; show("home"); toast("Partida abandonada"); };
+$("#quitYes").onclick = () => { g.sched.clear(); g.over = true; $("#quitOv").hidden = true; show("home"); toast("Partida abandonada"); if (app.coins < PRICE) setTimeout(bankrupt, 600); };
 document.addEventListener("visibilitychange", () => { if (document.hidden && app.settings.autopause && app.screen === "game") pauseGame(); });
 
-/* finish */
+/* finish + endings */
 function finishGame() {
-  g.over = true; g.sched.clear();
+  g.over = true; g.sched.clear(); stopSpin();
   try { speechSynthesis.cancel(); } catch (e) {}
-  $("#banner").hidden = true; $("#pauseOv").hidden = true;
+  $("#banner").hidden = true; $("#pauseOv").hidden = true; $("#dealer").classList.remove("checking");
   const missed = [];
   g.me.cards.forEach(c => c.nums.forEach(n => { if (g.drawnSet.has(n) && !c.marked.has(n)) missed.push(n); }));
   const mine = g.me.cards.reduce((s, c) => s + [...c.nums].filter(n => g.drawnSet.has(n)).length, 0);
-  const att = mine ? Math.round(100 * (mine - missed.length) / mine) : 100;
-  app.coins = Math.max(0, app.coins + g.earned);
   app.stats.games++; app.stats.marked += mine - missed.length; app.stats.missed += missed.length;
-  const meBingo = g.bingoWinners.includes(ME);
-  const lastN = g.drawn[g.drawn.length - 1];
-  const title = meBingo ? "¡Has cantado bingo!" : g.bingoWinners.length ? `Bingo para ${winnersText(g.bingoWinners)}` : "Se acabaron las bolas";
-  if (meBingo) say("¡Bingo! Enhorabuena"); else if (g.bingoWinners.length) say(`Bingo para ${winnersText(g.bingoWinners)}`);
-  const ov = $("#resultOv"); ov.innerHTML = "";
-  if (lastN) ov.appendChild(ballEl(lastN, 70));
-  ov.insertAdjacentHTML("beforeend", `
-    <h2 style="font-size:32px">${title}</h2>
-    <p>${meBingo ? "Ni una bola se te ha resistido." : missed.length ? "La próxima va a caer." : "Estuviste atento, faltó suerte."}</p>
+  showResult({
+    bingo: g.bingoWinners.includes(ME), line: g.lineWinners.includes(ME),
+    bingoW: g.bingoWinners, lineW: g.lineWinners, drawn: g.drawn.length, lastN: g.drawn[g.drawn.length - 1],
+    att: mine ? Math.round(100 * (mine - missed.length) / mine) : 100, missed,
+    cost: g.cost, prizes: g.prizes, penalty: g.penalty, before: g.coinsBefore, after: app.coins, falseClaims: g.falseClaims
+  });
+}
+function showResult(r) {
+  const net = r.prizes - r.cost - r.penalty, win = r.bingo, partial = !r.bingo && r.line;
+  const ov = $("#resultOv"); ov.className = "overlay result" + (win || partial ? "" : " lose"); ov.innerHTML = "";
+  const mini = document.createElement("div"); mini.className = "mini";
+  mini.innerHTML = `<div class="dealer ${win ? "happy" : partial ? "" : "sad"}" style="position:static;width:80px"><svg viewBox="0 0 84 96">${DEALER_SVG}</svg></div>`;
+  if (r.lastN) mini.appendChild(ballEl(r.lastN, 54));
+  ov.appendChild(mini);
+  const title = win ? "¡BINGO!" : partial ? "¡Línea para ti!" : r.bingoW.length ? `Bingo para ${winnersText(r.bingoW)}` : "Se acabaron las bolas";
+  const sub = win ? "Te llevas el premio gordo de la mesa." : partial ? "No ha caído el bingo, pero te llevas la línea." : r.missed.length ? "Esta vez no ha habido suerte. La próxima cae." : "Estuviste atento, faltó suerte.";
+  ov.insertAdjacentHTML("beforeend", (win ? `<div class="stamp gold">¡BINGO!</div>` : `<h2 style="font-size:30px">${title}</h2>`) + `<p>${sub}</p>
     <div class="rlist">
-      <div><span>Línea</span><b>${g.lineWinners.length ? winnersText(g.lineWinners) : "nadie"}</b></div>
-      <div><span>Bingo</span><b>${g.bingoWinners.length ? winnersText(g.bingoWinners) : "nadie"}</b></div>
-      <div><span>Bolas sacadas</span><b>${g.drawn.length}</b></div>
-      <div><span>Tu atención</span><b>${att} %</b></div>
-      <div><span>Se te escaparon</span><b>${missed.length ? missed.sort((a, b) => a - b).join(", ") : "ninguno"}</b></div>
-      <div><span>Cantos falsos</span><b>${g.falseClaims}</b></div>
-      <div><span>Fichas</span><b style="color:${g.earned >= 0 ? "var(--ok)" : "#ff8d7a"}">${g.earned >= 0 ? "+" : ""}${g.earned}</b></div>
+      <div><span>Línea</span><b>${r.lineW.length ? winnersText(r.lineW) : "nadie"}</b></div>
+      <div><span>Bingo</span><b>${r.bingoW.length ? winnersText(r.bingoW) : "nadie"}</b></div>
+      <div><span>Bolas sacadas · tu atención</span><b>${r.drawn} · ${r.att} %</b></div>
+      <div><span>Se te escaparon</span><b>${r.missed.length ? r.missed.sort((a, b) => a - b).join(", ") : "ninguno"}</b></div>
+      <div><span>Cartones</span><b class="neg">−${r.cost}</b></div>
+      ${r.prizes ? `<div><span>Premios</span><b class="pos">+${r.prizes}</b></div>` : ""}
+      ${r.penalty ? `<div><span>Cantos falsos</span><b class="neg">−${r.penalty}</b></div>` : ""}
+      <div class="tot"><span>Tus fichas</span><b><span id="rCoins">${r.before}</span> <span class="${net >= 0 ? "pos" : "neg"}">(${net >= 0 ? "+" : ""}${net})</span></b></div>
     </div>
-    <button class="btn gold" id="again" type="button">Revancha</button>
-    <button class="btn ghost" id="toMenu" type="button">Volver al menú</button>`);
+    <div style="display:grid;gap:10px" id="rBtns"></div>`);
   ov.hidden = false;
-  $("#again").onclick = () => { app.cfg = { ...g.cfg }; preparePick(); show("pick"); };
-  $("#toMenu").onclick = () => show("home");
+  setTimeout(() => countTo($("#rCoins"), r.before, r.after, 1200), 500);
+  const btns = $("#rBtns");
+  if (app.coins < PRICE) {
+    btns.innerHTML = `<button class="btn primary" id="toBank" type="button">Continuar</button>`;
+    $("#toBank").onclick = bankrupt;
+    setTimeout(() => { if (!ov.hidden && app.coins < PRICE && $("#bankOv").hidden) bankrupt(); }, 3600);
+  } else {
+    btns.innerHTML = `<button class="btn gold" id="again" type="button">Revancha</button><button class="btn ghost" id="toMenu" type="button">Volver al menú</button>`;
+    $("#again").onclick = () => { app.cfg = { ...(g ? g.cfg : app.cfg) }; if (app.coins < app.cfg.cards * PRICE) { toast("No te llega para tantos cartones: elige menos"); show("custom"); return; } preparePick(); show("pick"); };
+    $("#toMenu").onclick = () => show("home");
+  }
+  if (win) { confetti(180, .2); setTimeout(() => confetti(120, .35), 600); coinFx(26, "rain"); fanfare(); coinSound(14); say("¡Bingo! Enhorabuena"); vibe([80, 50, 80, 50, 200]); }
+  else if (partial) { confetti(60, .3); coinSound(6); beep(660, .2, "triangle", .07); }
+  else { sadTrombone(); if (r.bingoW.length) say(`Bingo para ${winnersText(r.bingoW)}`); }
+}
+function bankrupt() {
+  const ov = $("#bankOv"), coin = $("#bankCoin"), stamp = $("#bankStamp");
+  app.stats.bankrupt++;
+  $("#resultOv").hidden = true;
+  coin.className = "bigcoin"; coin.textContent = app.coins;
+  stamp.style.visibility = "hidden";
+  $("#bankTitle").textContent = "Te has quedado sin fichas";
+  $("#bankText").textContent = `No te llega ni para un cartón (${PRICE} fichas). No pasa nada: la casa invita.`;
+  const btn = $("#bankBtn"); btn.textContent = "Recibir 500 fichas"; btn.hidden = true;
+  ov.hidden = false;
+  const r = coin.getBoundingClientRect(), br = $("#screenbox").getBoundingClientRect();
+  coinFx(16, "spill", { x: r.left - br.left + r.width / 2, y: r.top - br.top + r.height / 2 });
+  countTo(coin, app.coins, 0, 800);
+  sadTrombone(); vibe([200, 80, 200]);
+  setTimeout(() => {
+    coin.classList.add("empty");
+    stamp.style.visibility = "visible"; stamp.style.animation = "none"; void stamp.offsetWidth; stamp.style.animation = "";
+    beep(110, .4, "square", .06); btn.hidden = false; btn.focus();
+  }, 900);
+  btn.onclick = () => {
+    if (btn.dataset.done === "1") { btn.dataset.done = ""; ov.hidden = true; show("home"); return; }
+    coin.className = "bigcoin full"; stamp.style.visibility = "hidden";
+    countTo(coin, 0, START_COINS, 1100);
+    const rr = coin.getBoundingClientRect();
+    coinFx(18, "gather", { x: br.width / 2, y: br.height + 20 });
+    confetti(90, .3); coinSound(16); fanfare();
+    setCoins(START_COINS);
+    $("#bankTitle").textContent = "¡De vuelta a la mesa!";
+    $("#bankText").textContent = "Tienes otra vez 500 fichas. Que la suerte te acompañe.";
+    btn.textContent = "Volver al menú"; btn.dataset.done = "1";
+  };
+}
+
+/* demo jumps for the endings */
+function demoEnding(kind) {
+  if (g) g.sched.clear();
+  const cfg = { ...app.cfg }; app.cfg = cfg;
+  const cards = Array.from({ length: cfg.cards }, genCard);
+  if (kind === "bank") {
+    startGameSilently(cards);
+    setCoins(8, false);
+    g.over = true; show("game"); bankrupt(); return;
+  }
+  startGameSilently(cards);
+  const drawn = shuffle(Array.from({ length: MAXN }, (_, i) => i + 1)).slice(0, 52);
+  drawn.forEach(n => { g.drawn.push(n); g.drawnSet.add(n); $("#bd" + n).classList.add("on"); });
+  if (kind === "win") {
+    const c = g.me.cards[0]; c.nums.forEach(n => { if (!g.drawnSet.has(n)) { g.drawn.push(n); g.drawnSet.add(n); } c.marked.add(n); });
+    g.me.cards.slice(1).forEach(cc => cc.nums.forEach(n => { if (g.drawnSet.has(n)) cc.marked.add(n); }));
+    g.lineWinners = [ME]; g.bingoWinners = [ME];
+    g.prizes = prizeOf(cfg, "linea") + prizeOf(cfg, "bingo");
+    setCoins(app.coins + g.prizes, false); app.stats.bingos++; app.stats.lines++;
+  } else {
+    g.me.cards.forEach(cc => cc.nums.forEach(n => { if (g.drawnSet.has(n) && rnd(10) > 1) cc.marked.add(n); }));
+    g.lineWinners = [g.bots[0]]; g.bingoWinners = [g.bots[g.bots.length - 1]];
+  }
+  buildGame(); show("game");
+  finishGame();
+}
+function startGameSilently(cards) {
+  const cfg = { ...app.cfg }, cost = cfg.cards * PRICE;
+  if (app.coins < cost) setCoins(START_COINS, false);
+  cards.forEach(c => c.marked = new Set());
+  g = {
+    cfg, bag: [], drawn: [], drawnSet: new Set(), phase: "bingo", paused: false, over: false, claim: null, drawTask: null, spinTask: null,
+    me: { cards }, hints: 3, prizes: 0, penalty: 0, cost, falseClaims: 0, coinsBefore: app.coins,
+    bots: shuffle(PERSONAS.slice()).slice(0, cfg.players - 1).map(p => ({ ...p, cards: Array.from({ length: cfg.cards }, () => { const c = genCard(); c.missed = new Set(); return c; }), claimFor: null })),
+    lineWinners: [], bingoWinners: [], sched: new Scheduler()
+  };
+  setCoins(app.coins - cost, false);
+  buildGame();
 }
 
 /* ---------- settings & stats ---------- */
@@ -1143,13 +1492,14 @@ $("#setBack").onclick = () => show(app.settingsReturn === "game" && g && !g.over
 function renderStats() {
   const s = app.stats, tot = s.marked + s.missed;
   $("#statGrid").innerHTML = [
-    [s.games, "partidas"], [s.lines, "líneas cantadas"], [s.bingos, "bingos"], [tot ? Math.round(100 * s.marked / tot) + " %" : "—", "atención media"], [app.coins, "fichas"], [s.missed, "números escapados"]
+    [s.games, "partidas"], [s.lines, "líneas cantadas"], [s.bingos, "bingos"], [tot ? Math.round(100 * s.marked / tot) + " %" : "—", "atención media"],
+    [app.coins, "fichas ahora"], [s.best, "récord de fichas"], [s.missed, "números escapados"], [s.bankrupt, "bancarrotas"]
   ].map(([v, l]) => `<div class="stat"><b>${v}</b><span>${l}</span></div>`).join("");
 }
 
 /* ---------- docs sample ---------- */
 const sample = genCard(); sample.tint = 0;
-[...sample.grid[1]].filter(Boolean).forEach(n => sample.marked.add(n));
+sample.grid[1].filter(Boolean).forEach(n => sample.marked.add(n));
 sample.grid[0].filter(Boolean).slice(0, 2).forEach(n => sample.marked.add(n));
 $("#docCard").appendChild(cardEl(sample));
 
