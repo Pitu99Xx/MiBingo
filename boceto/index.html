@@ -107,6 +107,23 @@ label.f input:focus{border-color:var(--gold);outline:none}
 .quick .deco .ball{--s:40px}
 .price{display:inline-flex;align-items:center;gap:5px;font-weight:800;color:var(--gold)}
 .price .coin{width:15px;height:15px}
+.custom{border-radius:22px;padding:18px;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:10px;
+  background:radial-gradient(120% 120% at 12% 0%,#7d2b3c,#4a1520 58%,#30101a);
+  box-shadow:inset 0 0 0 2px rgba(243,183,59,.6),inset 0 0 0 6px #3a1320,inset 0 0 0 7px rgba(243,183,59,.28),0 10px 24px rgba(0,0,0,.35)}
+.custom h3{font-size:26px;position:relative;z-index:1}
+.custom p{margin:0;color:#f3d9dd;font-size:14px;max-width:58%;position:relative;z-index:1}
+.custom .fan{position:absolute;right:6px;top:16px;width:120px;height:92px;pointer-events:none}
+.custom .fan span{position:absolute;right:4px;top:10px;width:88px;height:56px;border-radius:8px;background-color:var(--t);
+  background-image:radial-gradient(circle,rgba(35,28,23,.55) 2px,transparent 2.5px);background-size:9.6px 13px;background-position:2px 14px;
+  box-shadow:inset 0 9px 0 rgba(184,50,31,.85),0 5px 12px rgba(0,0,0,.45);transform-origin:90% 110%;transition:transform .35s cubic-bezier(.3,1.5,.5,1)}
+.custom .fan span:nth-child(1){transform:rotate(-22deg)}
+.custom .fan span:nth-child(2){transform:rotate(-9deg)}
+.custom .fan span:nth-child(3){transform:rotate(4deg)}
+.custom:hover .fan span:nth-child(1){transform:rotate(-34deg)}
+.custom:hover .fan span:nth-child(3){transform:rotate(14deg)}
+.opts{display:flex;gap:6px;flex-wrap:wrap;position:relative;z-index:1}
+.opts span{background:rgba(0,0,0,.3);border:1px solid rgba(243,183,59,.4);border-radius:999px;padding:3px 10px;font-size:12.5px;font-weight:800;color:#fbe9c4;font-variant-numeric:tabular-nums}
+.btn.velvet{background:var(--paper);color:#4a1520;box-shadow:0 4px 0 #b9a98a;position:relative;z-index:1}
 .tile{background:var(--room);border:1px solid var(--line);border-radius:16px;padding:14px 16px;text-align:left;display:flex;flex-direction:column;gap:2px}
 .tile b{font-size:16px}
 .tile small{color:var(--muted);font-size:13px}
@@ -412,6 +429,7 @@ label.f input:focus{border-color:var(--gold);outline:none}
                 </div>
                 <h1>MiBingo</h1>
                 <p>El bingo de toda la vida, en el bolsillo.<br>Atento a las bolas: aquí nadie marca por ti.</p>
+                <p style="font-size:12px">Para mayores de 14 años · sin dinero real</p>
               </div>
               <button class="btn google" id="googleBtn" type="button"><span class="gmark" aria-hidden="true"></span>Continuar con Google</button>
               <div class="or">o con tu correo</div>
@@ -433,7 +451,7 @@ label.f input:focus{border-color:var(--gold);outline:none}
               <div class="swatches" id="swatches"></div>
               <label class="f">Nombre en la mesa<input id="pName" maxlength="14" placeholder="Tu nombre" autocomplete="nickname"></label>
               <label class="f">Fecha de nacimiento<input id="pBirth" type="date" max="2026-11-24"></label>
-              <p class="small" id="ageOut">Usamos la fecha para calcular tu edad; nadie más la ve.</p>
+              <p class="small" id="ageOut">Hay que tener al menos 14 años. Nadie más ve tu fecha.</p>
               <div class="gift"><span class="coin" style="width:26px;height:26px"></span><span>Al crear la cuenta te regalamos <b>500 fichas</b> para empezar.</span></div>
               <p class="err" id="pErr" hidden></p>
               <button class="btn primary" id="pSave" type="button">Confirmar y entrar</button>
@@ -458,7 +476,13 @@ label.f input:focus{border-color:var(--gold);outline:none}
                 <p>4 jugadores · 3 cartones cada uno<br>Se juega línea y bingo · <span class="price"><span class="coin"></span>60 fichas</span></p>
                 <button class="btn gold" id="goQuick" type="button" style="margin-top:6px">Jugar ahora</button>
               </article>
-              <button class="tile" id="goCustom" type="button"><b>Partida personalizada</b><small>Hasta 6 jugadores y 5 cartones cada uno, velocidad y nivel de los rivales</small></button>
+              <article class="custom">
+                <div class="fan" aria-hidden="true"><span style="--t:#e9def8"></span><span style="--t:#d6ebf7"></span><span style="--t:#fde2c8"></span></div>
+                <h3>Personalizada</h3>
+                <p>Monta tu mesa: tú decides cuántos juegan, con cuántos cartones y a qué ritmo.</p>
+                <div class="opts"><span>2–6 jugadores</span><span>1–5 cartones</span><span>3 ritmos</span></div>
+                <button class="btn velvet" id="goCustom" type="button" style="margin-top:4px">Montar mi partida</button>
+              </article>
               <div class="tiles">
                 <button class="tile" data-go="howto" type="button"><span class="ico">?</span>Cómo se juega</button>
                 <button class="tile" data-go="stats" type="button"><span class="ico">%</span>Mis números</button>
@@ -642,20 +666,18 @@ label.f input:focus{border-color:var(--gold);outline:none}
   <!-- ================= DOCS ================= -->
   <main class="docs">
     <header>
-      <h1>MiBingo, <em>boceto 2</em></h1>
+      <h1>MiBingo, <em>boceto 3</em></h1>
       <p class="lede">Un bingo contra rivales de la casa, con un crupier que gira el bombo y canta las bolas, y cartones que se marcan a mano. El teléfono de la izquierda funciona de verdad: juega una partida entera o salta directamente a la victoria, la derrota o la bancarrota.</p>
     </header>
 
     <div class="changes">
       <h2>Cambios de esta versión</h2>
       <ul>
-        <li>Bolas del <b>1 al 90</b> y cartones clásicos de <b>3×9</b>.</li>
-        <li>Eliges <b>exactamente N cartones</b>; la partida rápida es de 4 jugadores con <b>3 cartones</b>.</li>
-        <li><b>Fichas</b>: 500 al crear la cuenta, los cartones cuestan y los premios salen del bote. Si te arruinas, vuelves a 500.</li>
-        <li>Animaciones de <b>victoria, derrota y bancarrota</b>, y de cobro de premio en la mesa.</li>
-        <li><b>Crupier animado</b> con bombo girando a su lado: gira la manivela, la bola sale rodando y la canta.</li>
-        <li>Los cartones van <b>uno debajo de otro</b>: si no caben, deslizas hacia arriba o abajo, con un indicador de en cuál estás.</li>
+        <li>Nueva tarjeta de <b>partida personalizada</b> en el menú, de terciopelo granate con cartones en abanico, a juego con la de partida rápida.</li>
+        <li><b>Edad mínima de 14 años</b>: el perfil no deja continuar por debajo y se avisa desde el acceso.</li>
+        <li>Economía confirmada: <b>20 fichas por cartón</b>, línea 30 % y bingo 70 % del bote.</li>
       </ul>
+      <p class="muted" style="margin:10px 0 0;font-size:14px">De la versión anterior: bolas del 1 al 90, cartones de 3×9, crupier animado con bombo, fichas con bancarrota y cartones apilados que se deslizan en vertical.</p>
     </div>
 
     <section>
@@ -685,6 +707,7 @@ label.f input:focus{border-color:var(--gold);outline:none}
         <tr><td>Empate en la misma bola</td><td>se reparte</td></tr>
         <tr><td>Canto falso</td><td>−10</td></tr>
         <tr><td>Bancarrota (no te llega para 1 cartón)</td><td>vuelves a 500</td></tr>
+        <tr><td>Edad mínima para jugar</td><td>14 años</td></tr>
       </table>
       <p class="muted" style="margin-top:10px">Partida rápida: pagas 60 por 3 cartones y el bote es de 240, así que la línea da 72 y el bingo 168. Sin dinero real ni compras.</p>
     </section>
@@ -722,14 +745,6 @@ label.f input:focus{border-color:var(--gold);outline:none}
     </section>
 
     <section>
-      <h2>Pendiente de confirmar</h2>
-      <div class="qs">
-        <div class="q"><b>Precio del cartón y reparto del bote</b><span>He puesto 20 fichas por cartón, y 30 % del bote para la línea y 70 % para el bingo. ¿Te parece bien?</span></div>
-        <div class="q"><b>Edad mínima</b><span>En España, por debajo de 14 años hace falta el consentimiento de los padres para guardar datos. ¿Ponemos 14 como mínimo o un aviso para los menores?</span></div>
-      </div>
-    </section>
-
-    <section>
       <h2>Tecnología</h2>
       <dl class="stack">
         <dt>App</dt><dd>Web con React + TypeScript (Vite), instalable como PWA.</dd>
@@ -742,7 +757,7 @@ label.f input:focus{border-color:var(--gold);outline:none}
     <section>
       <h2>Siguientes pasos</h2>
       <ol class="steps">
-        <li>Repasas esta versión y me confirmas los dos puntos pendientes.</li>
+        <li>Repasas esta versión y me dices si falta algo.</li>
         <li>Construyo la versión 1 en el repositorio.</li>
         <li>Creas el proyecto en Firebase y me pasas la configuración web.</li>
         <li>La publico en un enlace de pruebas para tus testers.</li>
@@ -979,8 +994,9 @@ function updAvatar() { const a = $("#pAvatar"); a.style.setProperty("--c", AV_CO
 function ageOf(d) { if (!d) return null; const b = new Date(d + "T12:00:00"), n = new Date(); let a = n.getFullYear() - b.getFullYear(); const m = n.getMonth() - b.getMonth(); if (m < 0 || (m === 0 && n.getDate() < b.getDate())) a--; return a; }
 function updAge() {
   const a = ageOf($("#pBirth").value), o = $("#ageOut");
-  if (a === null || isNaN(a)) { o.textContent = "Usamos la fecha para calcular tu edad; nadie más la ve."; return; }
-  o.textContent = a < 14 ? `Tienes ${a} años: pediremos permiso a un adulto.` : `Tienes ${a} años.`;
+  if (a === null || isNaN(a)) { o.textContent = "Hay que tener al menos 14 años. Nadie más ve tu fecha."; o.style.color = ""; return; }
+  o.textContent = a < 14 ? `Tienes ${a} años. MiBingo es para mayores de 14.` : `Tienes ${a} años.`;
+  o.style.color = a < 14 ? "var(--bad)" : "";
 }
 $("#pName").addEventListener("input", updAvatar);
 $("#pBirth").addEventListener("input", updAge);
@@ -988,6 +1004,7 @@ $("#pSave").onclick = () => {
   const n = $("#pName").value.trim(), b = $("#pBirth").value, a = ageOf(b), err = $("#pErr");
   if (n.length < 2) { err.textContent = "Escribe tu nombre, al menos 2 letras."; err.hidden = false; return; }
   if (!b || isNaN(a) || a < 0 || a > 120) { err.textContent = "Elige tu fecha de nacimiento."; err.hidden = false; return; }
+  if (a < 14) { err.textContent = "Lo sentimos: hay que tener al menos 14 años para jugar."; err.hidden = false; return; }
   err.hidden = true; app.user.name = n; app.user.birth = b; show("home");
   setTimeout(() => { coinFx(14, "gather", { x: 190, y: 380 }); coinSound(8); toast("¡500 fichas de bienvenida!"); }, 250);
 };
