@@ -318,7 +318,7 @@ label.f input:focus{border-color:var(--gold);outline:none}
 .screens{position:relative;flex:1;min-height:0}
 /* El fondo de cada pantalla llega hasta arriba del todo; el contenido empieza bajo la barra de estado
    y, al desplazarse, pasa por debajo de ella (iOS lo difumina como en una app nativa). */
-:root{--safe-top:calc(env(safe-area-inset-top,0px) + 10px);--safe-bottom:env(safe-area-inset-bottom,0px)}
+:root{--safe-top:calc(env(safe-area-inset-top,0px) + 24px);--safe-bottom:env(safe-area-inset-bottom,0px)}
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;padding-top:var(--safe-top)}
 .overlay{padding-top:calc(var(--safe-top) + 24px)!important}
 .splash{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:14px;background:radial-gradient(120% 70% at 50% 0%,var(--felt-hi),var(--felt) 45%,var(--room-2) 85%)}
