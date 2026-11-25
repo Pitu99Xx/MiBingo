@@ -1,6 +1,6 @@
 name: Publicar en Firebase
 
-# Cada cambio en main o en la rama de desarrollo se publica en https://mibingo-865e2.web.app
+# Cada cambio en main o en la rama de desarrollo se publica en https://mibingoapp.web.app
 on:
   push:
     branches: [main, claude/trusting-johnson-zkigpq]
@@ -29,6 +29,10 @@ jobs:
         run: |
           printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
           echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/sa.json" >> "$GITHUB_ENV"
+      - name: Asegurar el sitio mibingoapp
+        run: |
+          npx --yes firebase-tools@14.27.0 hosting:sites:get mibingoapp --project mibingo-865e2 \
+            || npx --yes firebase-tools@14.27.0 hosting:sites:create mibingoapp --project mibingo-865e2 --non-interactive
       - name: Publicar la web
         run: npx --yes firebase-tools@14.27.0 deploy --only hosting --project mibingo-865e2 --non-interactive
       - name: Publicar las reglas de seguridad de Firestore

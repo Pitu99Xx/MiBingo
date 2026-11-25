@@ -2,7 +2,7 @@
 
 Bingo de 90 bolas contra rivales de la casa, como app web sobre Firebase.
 
-- **Web de pruebas:** https://mibingo-865e2.web.app
+- **Web de pruebas:** https://mibingoapp.web.app
 - **Boceto original:** `boceto/index.html`
 
 ## Cómo está hecho
