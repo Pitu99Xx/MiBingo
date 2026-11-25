@@ -313,7 +313,7 @@ label.f input:focus{border-color:var(--gold);outline:none}
 
 /* ---------- app frame ---------- */
 .frame{position:relative;height:100%;max-width:480px;margin:0 auto;background:var(--room-2);overflow:hidden;display:flex;flex-direction:column;
-  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  padding-top:max(env(safe-area-inset-top,0px),var(--top-fallback,0px));padding-bottom:max(env(safe-area-inset-bottom,0px),var(--bottom-fallback,0px))}
 @media (min-width:520px){.frame{box-shadow:0 0 0 1px #3a2e24,0 30px 80px rgba(0,0,0,.55)}}
 .screens{position:relative;flex:1;min-height:0}
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden}
@@ -326,5 +326,5 @@ label.f input:focus{border-color:var(--gold);outline:none}
 @media (max-height:700px){.table-wrap{height:258px}.felt{inset:70px 10px 22px}.dealer{transform:scale(.85);transform-origin:top right}.bombo{transform:scale(.85);transform-origin:top left}}
 .pad{padding:12px 20px 20px;display:flex;flex-direction:column;gap:14px}
 .version{text-align:center;font-size:12px;font-variant-numeric:tabular-nums;opacity:.8}
-.update-pill{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);z-index:45;border:0;border-radius:999px;padding:8px 14px;
+.update-pill{position:absolute;left:50%;top:calc(max(env(safe-area-inset-top,0px),var(--top-fallback,0px)) + 8px);transform:translateX(-50%);z-index:45;border:0;border-radius:999px;padding:8px 14px;
   background:var(--gold);color:var(--ink);font-size:13px;font-weight:600;box-shadow:0 6px 18px rgba(0,0,0,.45);white-space:nowrap;animation:pop .25s}
