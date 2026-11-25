@@ -67,19 +67,6 @@ label.f input:focus{border-color:var(--gold);outline:none}
 .err{color:var(--bad);font-size:13.5px;margin:0;font-weight:600}
 .gift{display:flex;align-items:center;gap:10px;background:color-mix(in srgb,var(--gold) 14%,transparent);border:1px solid color-mix(in srgb,var(--gold) 40%,transparent);border-radius:12px;padding:10px 12px;font-size:13.5px}
 
-function welcomeCoins() {
-  const n = 14, el = $("#hCoins"), chip = $("#hChips");
-  el.textContent = "0";
-  toast("¡500 fichas de bienvenida!");
-  setTimeout(() => coinFx(n, "gather", { x: 190, y: 420 }), 300);
-  // cada moneda que llega al contador suma su parte hasta llegar a 500
-  for (let i = 0; i < n; i++) setTimeout(() => {
-    el.textContent = Math.round(START_COINS * (i + 1) / n);
-    chip.classList.remove("bump"); void chip.offsetWidth; chip.classList.add("bump");
-    beep(1300 + i * 40, .05, "square", .025);
-  }, 300 + 1000 + i * 40);
-}
-
 /* ---------- home ---------- */
 .home-top{display:flex;align-items:center;gap:12px;padding:8px 20px 0}
 .home-top .avatar{width:44px;height:44px;font-size:18px;margin:0;box-shadow:none}

@@ -23,11 +23,16 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - name: Publicar web y reglas de seguridad
+      - name: Credenciales de Firebase
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
           printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
-          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json"
-          npx --yes firebase-tools@14.27.0 deploy --only hosting,firestore:rules --project mibingo-865e2 --non-interactive
-          rm -f "$RUNNER_TEMP/sa.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/sa.json" >> "$GITHUB_ENV"
+      - name: Publicar la web
+        run: npx --yes firebase-tools@14.27.0 deploy --only hosting --project mibingo-865e2 --non-interactive
+      - name: Publicar las reglas de seguridad de Firestore
+        run: npx --yes firebase-tools@14.27.0 deploy --only firestore:rules --project mibingo-865e2 --non-interactive
+      - name: Borrar credenciales
+        if: always()
+        run: rm -f "$RUNNER_TEMP/sa.json"
