@@ -8,6 +8,7 @@ import { toast } from "../lib/toast";
 import { Avatar, Ball } from "../components";
 import { AV_COLORS, MIN_AGE } from "../game/rules";
 import { ageOf, createProfile } from "../lib/profile";
+import { APP_VERSION } from "../lib/version";
 
 export function authError(e: unknown): string {
   const code = (e as { code?: string })?.code || "";
@@ -74,7 +75,7 @@ export function Login() {
           </div>
           <h1>MiBingo</h1>
           <p>El bingo de toda la vida, en el bolsillo.<br />Atento a las bolas: aquí nadie marca por ti.</p>
-          <p style={{ fontSize: 12 }}>Para mayores de {MIN_AGE} años · sin dinero real</p>
+          <p style={{ fontSize: 12 }}>Para mayores de {MIN_AGE} años · sin dinero real · v{APP_VERSION}</p>
         </div>
         <button className="btn google" type="button" onClick={google}><span className="gmark" aria-hidden="true" />Continuar con Google</button>
         <div className="or">o con tu correo</div>

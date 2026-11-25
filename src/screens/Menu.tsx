@@ -8,6 +8,7 @@ import { shuffle } from "../lib/random";
 import { beep } from "../lib/sound";
 import { coinFx } from "../lib/fx";
 import { toast } from "../lib/toast";
+import { APP_VERSION } from "../lib/version";
 
 /* ---------- Menú principal ---------- */
 export function Home({ profile, welcome, onWelcomeDone, savedDrawn, onQuick, onCustom, onResume, go, onLogout }: {
@@ -65,6 +66,7 @@ export function Home({ profile, welcome, onWelcomeDone, savedDrawn, onQuick, onC
           {dailyDone ? <>Reto de hoy cumplido. ¡Vuelve mañana a por otro!</> : <>Canta línea antes de la bola {DAILY_MAX_BALL} y gana <b>+{DAILY_BONUS} fichas</b>.</>}
         </div>
         <button className="btn ghost" type="button" style={{ fontSize: 13, padding: 9 }} onClick={onLogout}>Cerrar sesión</button>
+        <p className="small version">Versión {APP_VERSION}</p>
       </div>
     </section>
   );
@@ -164,6 +166,7 @@ export function SettingsScreen({ settings, onChange, onBack, email, onDelete }: 
         <p className="sec-t">Cuenta</p>
         <div className="list">
           <div className="row"><div>Sesión iniciada como<small className="mail" style={{ color: "var(--muted)" }}>{email}</small></div></div>
+          <div className="row"><div>Versión de la app<small>Se actualiza sola cuando hay cambios</small></div><b>{APP_VERSION}</b></div>
         </div>
         {!confirm
           ? <button className="btn ghost danger" type="button" onClick={() => setConfirm(true)}>Borrar mi cuenta</button>

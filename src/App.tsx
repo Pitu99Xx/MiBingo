@@ -14,6 +14,7 @@ import { DEFAULT_SETTINGS, Settings, applySettings, settings as liveSettings } f
 import { onToast, toast } from "./lib/toast";
 import { coinSound, fanfare, hush, rattle, sadTrombone, say, vibe } from "./lib/sound";
 import { centerOf, coinFx, confetti } from "./lib/fx";
+import { APP_VERSION, justUpdatedFrom, useUpdater } from "./lib/version";
 
 type Screen = "home" | "custom" | "pick" | "game" | "settings" | "howto" | "stats";
 type Result = GameResult & { coinsAfter: number };
@@ -44,6 +45,12 @@ export default function App() {
     onToast(msg => { setToastMsg({ msg, id: Date.now() }); clearTimeout(t); t = window.setTimeout(() => setToastMsg(null), 2600); });
     return () => onToast(null);
   }, []);
+
+  // ---------- actualizaciones ----------
+  useEffect(() => { if (justUpdatedFrom()) window.setTimeout(() => toast(`Actualizado a la versión ${APP_VERSION}`), 800); }, []);
+  // Se recarga sola si no estás jugando ni rellenando un formulario; si no, avisa y espera.
+  const calm = !!profile && !bankrupt && !welcome && (screen === "home" || screen === "howto" || screen === "stats") && !(gameRef.current && !gameRef.current.over && !gameRef.current.paused);
+  const pendingVersion = useUpdater(calm);
 
   // ---------- sesión y perfil ----------
   useEffect(() => onAuthStateChanged(auth, u => { setUser(u); if (!u) { setProfile(undefined); gameRef.current?.abandon(); gameRef.current = null; setSaved(null); setScreen("home"); } }), []);
@@ -205,6 +212,11 @@ export default function App() {
             await setCoins(START_COINS, { "stats.bankrupt": increment(1) });
           }}
           onDone={() => { setBankrupt(false); closeGame(); }} />
+      )}
+      {pendingVersion && !calm && (
+        <button type="button" className="update-pill" onClick={() => { pauseGame(); window.setTimeout(() => location.reload(), 600); }}>
+          Versión {pendingVersion} lista · <b>Actualizar</b>
+        </button>
       )}
       <canvas id="fx" />
       {toastMsg && <div className="toast" key={toastMsg.id} role="status">{toastMsg.msg}</div>}

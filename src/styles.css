@@ -325,3 +325,6 @@ label.f input:focus{border-color:var(--gold);outline:none}
 .mail{font-weight:800;color:var(--text);word-break:break-all}
 @media (max-height:700px){.table-wrap{height:258px}.felt{inset:70px 10px 22px}.dealer{transform:scale(.85);transform-origin:top right}.bombo{transform:scale(.85);transform-origin:top left}}
 .pad{padding:12px 20px 20px;display:flex;flex-direction:column;gap:14px}
+.version{text-align:center;font-size:12px;font-variant-numeric:tabular-nums;opacity:.8}
+.update-pill{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);z-index:45;border:0;border-radius:999px;padding:8px 14px;
+  background:var(--gold);color:var(--ink);font-size:13px;font-weight:600;box-shadow:0 6px 18px rgba(0,0,0,.45);white-space:nowrap;animation:pop .25s}
