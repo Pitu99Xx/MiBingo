@@ -1,0 +1,41 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
+    // Las cuentas de correo deben verificarse; las de Google ya vienen verificadas.
+    function verified() {
+      return request.auth.token.email_verified == true
+        || request.auth.token.firebase.sign_in_provider == 'google.com';
+    }
+    // 14 años ≈ 5114 días.
+    function oldEnough(d) { return d.birthDate is timestamp && d.birthDate <= request.time - duration.value(5114, 'd'); }
+
+    function validProfile(d) {
+      return d.keys().hasOnly(['name', 'birthDate', 'color', 'coins', 'stats', 'settings', 'daily', 'createdAt', 'updatedAt'])
+        && d.name is string && d.name.size() >= 2 && d.name.size() <= 14
+        && oldEnough(d)
+        && d.color is int && d.color >= 0 && d.color <= 5
+        && d.coins is int && d.coins >= 0 && d.coins <= 1000000
+        && d.stats is map && d.settings is map;
+    }
+
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      allow create: if isOwner(uid) && verified()
+        && validProfile(request.resource.data)
+        && request.resource.data.coins == 500;
+      allow update: if isOwner(uid) && verified()
+        && validProfile(request.resource.data)
+        && request.resource.data.birthDate == resource.data.birthDate;
+      allow delete: if isOwner(uid);
+
+      // Partida en pausa para reanudar (también desde otro dispositivo).
+      match /saved/{docId} {
+        allow read, delete: if isOwner(uid);
+        allow write: if isOwner(uid) && verified() && docId == 'current';
+      }
+    }
+  }
+}

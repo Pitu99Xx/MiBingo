@@ -1,0 +1,16 @@
+{
+  "name": "MiBingo",
+  "short_name": "MiBingo",
+  "description": "El bingo de toda la vida, en el bolsillo.",
+  "lang": "es",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#17120e",
+  "theme_color": "#17120e",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

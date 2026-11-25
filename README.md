@@ -1,11 +1,22 @@
 # MiBingo
 
-Bingo loto (bolas del 1 al 100) contra rivales de la casa, como webapp sobre Firebase.
+Bingo de 90 bolas contra rivales de la casa, como app web sobre Firebase.
 
-## Boceto
+- **Web de pruebas:** https://mibingo-865e2.web.app
+- **Boceto original:** `boceto/index.html`
 
-`boceto/index.html` es un prototipo jugable en un solo archivo: acceso, perfil, menú,
-partida personalizada, elección de cartones, mesa con crupier, pausa y resultado.
-Incluye al lado la propuesta de reglas, funciones y decisiones pendientes.
+## Cómo está hecho
 
-Para verlo en local, abre el archivo en el navegador.
+- React + TypeScript con Vite (`src/`).
+- Firebase Authentication (Google y correo con verificación) y Firestore (`firestore.rules`).
+- El motor de la partida (`src/game/engine.ts`) corre en el navegador; la partida en pausa se guarda en `users/{uid}/saved/current`.
+- Cada push a `main` o a la rama de desarrollo publica la web y las reglas (`.github/workflows/deploy.yml`), usando el secreto `FIREBASE_SERVICE_ACCOUNT`.
+
+## Desarrollo
+
+```bash
+npm install
+npm run dev      # http://localhost:5173 (app real)
+                 # http://localhost:5173/demo.html?v=game|home|result|bankrupt (pantallas sin Firebase)
+npm run build
+```
