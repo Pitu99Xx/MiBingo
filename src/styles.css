@@ -313,10 +313,14 @@ label.f input:focus{border-color:var(--gold);outline:none}
 
 /* ---------- app frame ---------- */
 .frame{position:relative;height:100%;max-width:480px;margin:0 auto;background:var(--room-2);overflow:hidden;display:flex;flex-direction:column;
-  padding-top:max(env(safe-area-inset-top,0px),var(--top-fallback,0px));padding-bottom:max(env(safe-area-inset-bottom,0px),var(--bottom-fallback,0px))}
+  padding-bottom:var(--safe-bottom)}
 @media (min-width:520px){.frame{box-shadow:0 0 0 1px #3a2e24,0 30px 80px rgba(0,0,0,.55)}}
 .screens{position:relative;flex:1;min-height:0}
-.screen{position:absolute;inset:0;display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden}
+/* El fondo de cada pantalla llega hasta arriba del todo; el contenido empieza bajo la barra de estado
+   y, al desplazarse, pasa por debajo de ella (iOS lo difumina como en una app nativa). */
+:root{--safe-top:max(env(safe-area-inset-top,0px),var(--top-fallback,0px));--safe-bottom:max(env(safe-area-inset-bottom,0px),var(--bottom-fallback,0px))}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;padding-top:var(--safe-top)}
+.overlay{padding-top:calc(var(--safe-top) + 24px)!important}
 .splash{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:14px;background:radial-gradient(120% 70% at 50% 0%,var(--felt-hi),var(--felt) 45%,var(--room-2) 85%)}
 .splash .ball{--s:72px;animation:spin2 1.2s linear infinite}
 @keyframes spin2{to{transform:rotate(360deg)}}
@@ -326,5 +330,5 @@ label.f input:focus{border-color:var(--gold);outline:none}
 @media (max-height:700px){.table-wrap{height:258px}.felt{inset:70px 10px 22px}.dealer{transform:scale(.85);transform-origin:top right}.bombo{transform:scale(.85);transform-origin:top left}}
 .pad{padding:12px 20px 20px;display:flex;flex-direction:column;gap:14px}
 .version{text-align:center;font-size:12px;font-variant-numeric:tabular-nums;opacity:.8}
-.update-pill{position:absolute;left:50%;top:calc(max(env(safe-area-inset-top,0px),var(--top-fallback,0px)) + 8px);transform:translateX(-50%);z-index:45;border:0;border-radius:999px;padding:8px 14px;
+.update-pill{position:absolute;left:50%;top:calc(var(--safe-top) + 8px);transform:translateX(-50%);z-index:45;border:0;border-radius:999px;padding:8px 14px;
   background:var(--gold);color:var(--ink);font-size:13px;font-weight:600;box-shadow:0 6px 18px rgba(0,0,0,.45);white-space:nowrap;animation:pop .25s}
