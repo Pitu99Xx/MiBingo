@@ -27,6 +27,7 @@ export function GameScreen({ game, version, coins, playerName, playerColor, resu
   const [board, setBoard] = useState(false);
   const [quit, setQuit] = useState(false);
   const [slide, setSlide] = useState(0);
+  const [overflow, setOverflow] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
   const timers = useRef<number[]>([]);
   const later = (fn: () => void, ms: number) => { timers.current.push(window.setTimeout(fn, ms)); };
@@ -40,6 +41,13 @@ export function GameScreen({ game, version, coins, playerName, playerColor, resu
     });
     return () => bindVisuals(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // El indicador "desliza" solo tiene sentido si hay cartones fuera de la vista.
+  useEffect(() => {
+    const el = listRef.current; if (!el) return;
+    const check = () => setOverflow(el.scrollHeight > el.clientHeight + 4);
+    check(); const ro = new ResizeObserver(check); ro.observe(el); return () => ro.disconnect();
   }, []);
 
   const last = game.lastBall();
@@ -139,7 +147,7 @@ export function GameScreen({ game, version, coins, playerName, playerColor, resu
             </div>
           ))}
         </div>
-        {game.me.length > 1 && (
+        {game.me.length > 1 && overflow && (
           <div className="dots">
             {game.me.map((_, i) => <button key={i} type="button" className={slide === i ? "on" : ""} aria-label={"Cartón " + (i + 1)} onClick={() => scrollToCard(i)} />)}
             <span className="lbl">Cartón {slide + 1} de {game.me.length} · desliza ↕</span>

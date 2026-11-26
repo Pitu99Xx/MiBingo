@@ -5,7 +5,7 @@ function fitViewport() {
   const portrait = matchMedia("(orientation: portrait)").matches;
   const a = screen.width, b = screen.height;
   const W = portrait ? Math.min(a, b) : Math.max(a, b), H = portrait ? Math.max(a, b) : Math.min(a, b);
-  const k = Math.min(W / 430, H / 880, 1.8);
+  const k = Math.min(W / 430, H / 1040, 1.8); // alto de referencia generoso: deja sitio a ~3-4 cartones
   const content = portrait && k > 1.05 ? `width=${Math.round(W / k)}, viewport-fit=cover` : "width=device-width, initial-scale=1, viewport-fit=cover";
   if (meta.getAttribute("content") !== content) meta.setAttribute("content", content);
 }
