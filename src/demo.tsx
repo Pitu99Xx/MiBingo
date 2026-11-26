@@ -3,6 +3,7 @@ import { useReducer, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import { Timestamp } from "firebase/firestore";
 import "./styles.css";
+import "./lib/viewport";
 import { Game, GameUI } from "./game/engine";
 import { genCard } from "./game/cards";
 import { QUICK } from "./game/rules";

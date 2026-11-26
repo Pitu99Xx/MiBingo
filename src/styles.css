@@ -312,9 +312,8 @@ label.f input:focus{border-color:var(--gold);outline:none}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 /* ---------- app frame ---------- */
-.frame{position:relative;height:100%;max-width:480px;margin:0 auto;background:var(--room-2);overflow:hidden;display:flex;flex-direction:column;
+.frame{position:relative;height:100%;width:100%;margin:0 auto;background:var(--room-2);overflow:hidden;display:flex;flex-direction:column;
   padding-bottom:var(--safe-bottom)}
-@media (min-width:520px){.frame{box-shadow:0 0 0 1px #3a2e24,0 30px 80px rgba(0,0,0,.55)}}
 .screens{position:relative;flex:1;min-height:0}
 /* El fondo de cada pantalla llega hasta arriba del todo; el contenido empieza bajo la barra de estado
    y, al desplazarse, pasa por debajo de ella (iOS lo difumina como en una app nativa). */
@@ -332,3 +331,39 @@ label.f input:focus{border-color:var(--gold);outline:none}
 .version{text-align:center;font-size:12px;font-variant-numeric:tabular-nums;opacity:.8}
 .update-pill{position:absolute;left:50%;top:calc(var(--safe-top) + 8px);transform:translateX(-50%);z-index:45;border:0;border-radius:999px;padding:8px 14px;
   background:var(--gold);color:var(--ink);font-size:13px;font-weight:600;box-shadow:0 6px 18px rgba(0,0,0,.45);white-space:nowrap;animation:pop .25s}
+
+/* ---------- pantallas grandes (tablet y ordenador) ---------- */
+/* Menús: columna centrada que no se estira de lado a lado. */
+.screen > .pad, .screen > .home-top, .screen > .topbar, .screen > .pick-head, .screen > .foot > *{width:100%;max-width:720px;margin-inline:auto}
+.overlay{align-items:center}
+.overlay > *{width:100%;max-width:520px}
+.overlay.bank > *{width:auto;max-width:100%}
+.overlay.bank > .btn{width:100%;max-width:520px}
+@media (min-width:760px){
+  .home-pad{display:grid;grid-template-columns:1fr 1fr;align-items:stretch}
+  .home-pad > *{grid-column:1 / -1}
+  .home-pad > .quick, .home-pad > .custom{grid-column:auto}
+  .home-pad > .quick{justify-content:space-between}
+  .pick-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));align-content:start}
+  .pick-list .pick{align-self:start}
+}
+/* Mesa en vertical ancho: la mesa no se deforma y los cartones van de dos en dos. */
+.table-wrap{width:100%;max-width:600px;align-self:center}
+@media (min-width:700px){
+  .carousel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start}
+  .cell{font-size:clamp(16px,1.6vw,22px)}
+}
+/* Mesa en horizontal: mesa a la izquierda, cartones a la derecha. */
+@media (min-width:900px) and (orientation:landscape){
+  .s-game{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;
+    grid-template-areas:"top cards" "table cards" "last actions";column-gap:12px}
+  .g-top{grid-area:top}
+  .s-game > .table-wrap{grid-area:table;align-self:center;justify-self:center}
+  .last{grid-area:last}
+  .cards-zone{grid-area:cards;padding-top:6px}
+  .g-actions{grid-area:actions;border-top:0;background:transparent}
+  .carousel{grid-template-columns:minmax(0,1fr)}
+}
+@media (min-width:900px) and (orientation:landscape) and (min-height:700px){
+  .s-game > .table-wrap{zoom:1.3}
+}

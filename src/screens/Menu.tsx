@@ -38,7 +38,7 @@ export function Home({ profile, welcome, onWelcomeDone, savedDrawn, onQuick, onC
         <div className="who"><small>Hola,</small><br /><b style={{ fontSize: 18 }}>{profile.name}</b></div>
         <CoinsChip value={profile.coins} override={override} />
       </div>
-      <div className="pad">
+      <div className="pad home-pad">
         {savedDrawn !== null && (
           <div className="resume"><span>Partida en pausa · bola {savedDrawn}</span><button type="button" onClick={onResume}>Continuar</button></div>
         )}
